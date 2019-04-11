@@ -394,7 +394,3 @@ class FileChooser(VBox):
             self._default_filename
         )
         return str_
-
-# Todo
-# - keep generic functions into __init__.py
-# - move the class to FileChooser.py (allowed?)

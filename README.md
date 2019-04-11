@@ -41,23 +41,12 @@ fc.selected_filename
 
 ## Screenshots
 
-### FileChooser default view
 ![Screenshot 1](screenshots/FileChooser_screenshot_1.png)
 
-### FileChooser open view
 ![Screenshot 2](screenshots/FileChooser_screenshot_2.png)
 
-### ntering a filename for an existing file
 ![Screenshot 3](screenshots/FileChooser_screenshot_3.png)
 
-### Existing file selected
 ![Screenshot 4](screenshots/FileChooser_screenshot_4.png)
 
-### Entering a filename for a new file
 ![Screenshot 5](screenshots/FileChooser_screenshot_5.png)
-
-### New file selected
-![Screenshot 6](screenshots/FileChooser_screenshot_6.png)
-
-### Quick navigation dropdown
-![Screenshot 7](screenshots/FileChooser_screenshot_7.png)

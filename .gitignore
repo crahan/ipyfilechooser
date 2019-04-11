@@ -1,0 +1,9 @@
+#Ignore vscode individual settings
+.vscode
+
+#Ignore egg-info files and folders
+*.egg-info
+*.pyc
+
+#Ignore pyenv version files
+.python-version

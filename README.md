@@ -41,12 +41,18 @@ fc.selected_filename
 
 ## Screenshots
 
+### Closed vs open dialog
+
 ![Screenshot 1](screenshots/FileChooser_screenshot_1.png)
 
 ![Screenshot 2](screenshots/FileChooser_screenshot_2.png)
 
+### Existing vs new file selection
+
 ![Screenshot 3](screenshots/FileChooser_screenshot_3.png)
 
 ![Screenshot 4](screenshots/FileChooser_screenshot_4.png)
+
+### Quick navigation dropdown
 
 ![Screenshot 5](screenshots/FileChooser_screenshot_5.png)

@@ -31,6 +31,7 @@ fc.reset(path='/Users/crahan/Projects', filename='output.txt')
 
 ```
 fc.reset()
+fc.rows
 fc.default
 fc.default_path
 fc.default_filepath

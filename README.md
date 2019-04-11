@@ -2,7 +2,7 @@
 
 A simple Python file chooser widget for use in Jupyter/IPython in conjunction with ipywidgets. The selected path and file are available via `.selected_path` and `.selected_filename` respectvely or as a single combined filepath via `selected`. The dialog can be reset to its default path and filename by using `.reset()`. 
 
-If a filename is typed in the filename text field that matches a file entry in the current folder the entry will be highlighted. To highlight the risk of overwriting existing files, the selected filepath will be green if the file does not exist and orange if it does.
+When a typed filename matches an existing file entry in the current folder the entry will be highlighted. To emphasize the risk of overwriting existing files, the selected filepath is displayed in green if the file does not exist and orange if it does.
 
 ## Usage
 

@@ -327,6 +327,16 @@ class FileChooser(VBox):
         )
 
     @property
+    def rows(self):
+        '''Get current number of rows'''
+        return self._dircontent.rows
+
+    @rows.setter
+    def rows(self, rows):
+        '''Set number of rows'''
+        self._dircontent.rows = rows
+
+    @property
     def selected(self):
         '''Get selected value'''
         return os.path.join(

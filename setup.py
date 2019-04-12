@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="ipyfilechooser",
-    version="0.1b1",
+    version="0.1b3",
     author="Thomas Bouve (@crahan)",
     author_email="crahan@n00.be",
     description=("Python file chooser widget for use in "

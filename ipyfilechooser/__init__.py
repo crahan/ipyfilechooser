@@ -1,6 +1,6 @@
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, HBox, VBox
-from .helpers import update_path, get_subpaths, get_dir_contents
+from .utils import update_path, get_subpaths, get_dir_contents
 import os
 
 

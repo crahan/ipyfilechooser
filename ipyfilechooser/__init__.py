@@ -290,7 +290,7 @@ class FileChooser(VBox):
         )
 
     def refresh(self):
-        '''re-render the form'''
+        '''Re-render the form'''
         self._set_form_values(
             self._pathlist.value,
             self._filename.value

@@ -10,7 +10,7 @@ When a typed filename matches an existing file entry in the current folder the e
 from ipyfilechooser import FileChooser
 
 # Create and display a FileChooser widget
-fc = FileChooser('/Users/crahan/Projects/Jupyter/ipywidgets')
+fc = FileChooser('/Users/crahan/FC demo')
 display(fc)
 
 # Print the selected path, filename, or both
@@ -18,23 +18,28 @@ print(fc.selected_path)
 print(fc.selected_filename)
 print(fc.selected)
 
-# Change defaults and reset
-fc.default_path = '/Users/crahan/Projects'
+# Change defaults and reset the dialog
+fc.default_path = '/Users/crahan/'
 fc.default_filename = 'output.txt'
 fc.reset()
 
 # Shorthand reset
-fc.reset(path='/Users/crahan/Projects', filename='output.txt')
+fc.reset(path='/Users/crahan/', filename='output.txt')
+
+# Change hidden files
+fc.show_hidden = True
 ```
 
 ## Functions and variables
 
 ```
 fc.reset()
+fc.refresh()
+fc.show_hidden
 fc.rows
 fc.default
 fc.default_path
-fc.default_filepath
+fc.default_filename
 fc.selected
 fc.selected_path
 fc.selected_filename

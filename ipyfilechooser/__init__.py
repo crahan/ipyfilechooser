@@ -1,5 +1,6 @@
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, HBox, VBox
+from .helpers import update_path, get_subpaths, get_dir_contents
 import os
 
 
@@ -8,12 +9,17 @@ class FileChooser(VBox):
     _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
     _LBL_NOFILE = 'No file selected'
 
-    def __init__(self, path=os.getcwd(), filename='', **kwargs):
+    def __init__(self,
+                 path=os.getcwd(),
+                 filename='',
+                 show_hidden=False,
+                 **kwargs):
 
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename
         self._selected_path = ''
         self._selected_filename = ''
+        self._show_hidden = show_hidden
 
         # Widgets
         self._pathlist = Dropdown(
@@ -119,52 +125,6 @@ class FileChooser(VBox):
             **kwargs
         )
 
-    def _get_subpaths(self, path):
-        '''Walk a path and return a list of subpaths'''
-        if os.path.isfile(path):
-            path = os.path.dirname(path)
-
-        paths = [path]
-        path, tail = os.path.split(path)
-
-        while tail:
-            paths.append(path)
-            path, tail = os.path.split(path)
-
-        return paths
-
-    def _update_path(self, path, item):
-        '''Update path with new item'''
-        if item == '..':
-            path = os.path.dirname(path)
-        else:
-            path = os.path.join(path, item)
-
-        return path
-
-    def _has_parent(self, path):
-        '''Check if a path has a parent folder'''
-        return os.path.basename(path) != ''
-
-    def _get_dir_contents(self, path, showhidden=False):
-        '''Get directory contents'''
-        files = list()
-        dirs = list()
-
-        if os.path.isdir(path):
-            for item in os.listdir(path):
-                append = True
-                if item.startswith('.') and not showhidden:
-                    append = False
-                full_item = os.path.join(path, item)
-                if os.path.isdir(full_item) and append:
-                    dirs.append(item)
-                elif append:
-                    files.append(item)
-            if self._has_parent(path):
-                dirs.insert(0, '..')
-        return sorted(dirs) + sorted(files)
-
     def _set_form_values(self, path, filename):
         '''Set the form values'''
 
@@ -184,10 +144,13 @@ class FileChooser(VBox):
         )
 
         # Set form values
-        self._pathlist.options = self._get_subpaths(path)
+        self._pathlist.options = get_subpaths(path)
         self._pathlist.value = path
-        self._dircontent.options = self._get_dir_contents(path)
         self._filename.value = filename
+        self._dircontent.options = get_dir_contents(
+            path,
+            hidden=self._show_hidden
+        )
 
         # If the value in the filename Text box equals a value in the
         # Select box and the entry is a file then select the entry.
@@ -233,7 +196,7 @@ class FileChooser(VBox):
 
     def _on_dircontent_select(self, change):
         '''Handler for when a folder entry is selected'''
-        new_path = self._update_path(
+        new_path = update_path(
             self._pathlist.value,
             change['new']
         )
@@ -326,6 +289,24 @@ class FileChooser(VBox):
             self._default_filename
         )
 
+    def refresh(self):
+        '''re-render the form'''
+        self._set_form_values(
+            self._pathlist.value,
+            self._filename.value
+        )
+
+    @property
+    def show_hidden(self):
+        '''Get current number of rows'''
+        return self._show_hidden
+
+    @show_hidden.setter
+    def show_hidden(self, hidden):
+        '''Set number of rows'''
+        self._show_hidden = hidden
+        self.refresh()
+
     @property
     def rows(self):
         '''Get current number of rows'''
@@ -335,6 +316,50 @@ class FileChooser(VBox):
     def rows(self, rows):
         '''Set number of rows'''
         self._dircontent.rows = rows
+
+    @property
+    def default(self):
+        '''Get the default value'''
+        return os.path.join(
+            self._default_path,
+            self._default_filename
+        )
+
+    @property
+    def default_path(self):
+        '''Get the default_path value'''
+        return self._default_path
+
+    @default_path.setter
+    def default_path(self, path):
+        '''Set the default_path'''
+        self._default_path = path.rstrip(os.path.sep)
+        self._default = os.path.join(
+            self._default_path,
+            self._filename.value
+        )
+        self._set_form_values(
+            self._default_path,
+            self._filename.value
+        )
+
+    @property
+    def default_filename(self):
+        '''Get the default_filename value'''
+        return self._default_filename
+
+    @default_filename.setter
+    def default_filename(self, filename):
+        '''Set the default_filename'''
+        self._default_filename = filename
+        self._default = os.path.join(
+            self._pathlist.value,
+            self._default_filename
+        )
+        self._set_form_values(
+            self._pathlist.value,
+            self._default_filename
+        )
 
     @property
     def selected(self):
@@ -354,53 +379,13 @@ class FileChooser(VBox):
         '''Get the selected_filename'''
         return self._selected_filename
 
-    @property
-    def default(self):
-        '''Get the default value'''
-        return os.path.join(
-            self._default_path,
-            self._default_filename
-        )
-
-    @property
-    def default_path(self):
-        '''Get the default_path value'''
-        return self._default_path
-
-    @property
-    def default_filename(self):
-        '''Get the default_filename value'''
-        return self._default_filename
-
-    @default_path.setter
-    def default_path(self, path):
-        '''Set the default_path'''
-        self._default_path = path.rstrip(os.path.sep)
-        self._default = os.path.join(
-            self._default_path,
-            self._filename.value
-        )
-        self._set_form_values(
-            self._default_path,
-            self._filename.value
-        )
-
-    @default_filename.setter
-    def default_filename(self, filename):
-        '''Set the default_filename'''
-        self._default_filename = filename
-        self._default = os.path.join(
-            self._pathlist.value,
-            self._default_filename
-        )
-        self._set_form_values(
-            self._pathlist.value,
-            self._default_filename
-        )
-
     def __repr__(self):
-        str_ = "FileChooser(path='{0}', filename='{1}')".format(
+        str_ = ("FileChooser("
+                "path='{0}', "
+                "filename='{1}', "
+                "show_hidden='{2}')").format(
             self._default_path,
-            self._default_filename
+            self._default_filename,
+            self._show_hidden
         )
         return str_

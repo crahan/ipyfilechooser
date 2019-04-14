@@ -9,11 +9,12 @@ class FileChooser(VBox):
     _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
     _LBL_NOFILE = 'No file selected'
 
-    def __init__(self,
-                 path=os.getcwd(),
-                 filename='',
-                 show_hidden=False,
-                 **kwargs):
+    def __init__(
+            self,
+            path=os.getcwd(),
+            filename='',
+            show_hidden=False,
+            **kwargs):
 
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename

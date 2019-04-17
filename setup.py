@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="ipyfilechooser",
-    version="0.1.0",
+    version="0.1.1",
     author="Thomas Bouve (@crahan)",
     author_email="crahan@n00.be",
     description=(

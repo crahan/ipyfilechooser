@@ -9,8 +9,10 @@ setup(
     version="0.1b4",
     author="Thomas Bouve (@crahan)",
     author_email="crahan@n00.be",
-    description=("Python file chooser widget for use in "
-                 "Jupyter/IPython in conjunction with ipywidgets"),
+    description=(
+        "Python file chooser widget for use in "
+        "Jupyter/IPython in conjunction with ipywidgets"
+    ),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/crahan/ipyfilechooser",

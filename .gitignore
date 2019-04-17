@@ -7,3 +7,7 @@
 
 #Ignore pyenv version files
 .python-version
+
+#Ignore build and dist folders
+build/*
+dist/*

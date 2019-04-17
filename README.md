@@ -49,16 +49,16 @@ fc.selected_filename
 
 ### Closed vs open dialog
 
-![Screenshot 1](screenshots/FileChooser_screenshot_1.png)
+![Screenshot 1](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_1.png)
 
-![Screenshot 2](screenshots/FileChooser_screenshot_2.png)
+![Screenshot 2](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_2.png)
 
 ### Existing vs new file selection
 
-![Screenshot 3](screenshots/FileChooser_screenshot_3.png)
+![Screenshot 3](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_3.png)
 
-![Screenshot 4](screenshots/FileChooser_screenshot_4.png)
+![Screenshot 4](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_4.png)
 
 ### Quick navigation dropdown
 
-![Screenshot 5](screenshots/FileChooser_screenshot_5.png)
+![Screenshot 5](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_5.png)

@@ -37,6 +37,7 @@ fc.reset()
 fc.refresh()
 fc.show_hidden
 fc.rows
+fc.title
 fc.default
 fc.default_path
 fc.default_filename

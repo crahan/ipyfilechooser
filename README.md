@@ -28,6 +28,9 @@ fc.reset(path='/Users/crahan/', filename='output.txt')
 
 # Change hidden files
 fc.show_hidden = True
+
+# Change the title (use '' to hide)
+fc.title = '<b>FileChooser title</b>'
 ```
 
 ## Functions and variables

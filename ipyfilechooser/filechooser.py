@@ -13,6 +13,9 @@ class FileChooser(VBox):
             self,
             path=os.getcwd(),
             filename='',
+            title='',
+            select_desc='Select',
+            change_desc='Change',
             show_hidden=False,
             **kwargs):
 
@@ -21,6 +24,8 @@ class FileChooser(VBox):
         self._selected_path = ''
         self._selected_filename = ''
         self._show_hidden = show_hidden
+        self._select_desc = select_desc
+        self._change_desc = change_desc
 
         # Widgets
         self._pathlist = Dropdown(
@@ -52,9 +57,16 @@ class FileChooser(VBox):
             )
         )
         self._select = Button(
-            description='Select',
+            description=self._select_desc,
             layout=Layout(width='auto')
         )
+
+        self._title = HTML(
+            value=title
+        )
+
+        if title is '':
+            self._title.layout.display = 'none'
 
         # Widget observe handlers
         self._pathlist.observe(
@@ -119,6 +131,7 @@ class FileChooser(VBox):
         # Call VBox super class __init__
         super().__init__(
             children=[
+                self._title,
                 self._gb,
                 buttonbar,
             ],
@@ -241,7 +254,7 @@ class FileChooser(VBox):
         else:
             self._gb.layout.display = 'none'
             self._cancel.layout.display = 'none'
-            self._select.description = 'Change'
+            self._select.description = self._change_desc
             self._selected_path = self._pathlist.value
             self._selected_filename = self._filename.value
             # self._default_path = self._selected_path
@@ -317,6 +330,21 @@ class FileChooser(VBox):
     def rows(self, rows):
         '''Set number of rows'''
         self._dircontent.rows = rows
+
+    @property
+    def title(self):
+        '''Get the title'''
+        return self._title.value
+
+    @title.setter
+    def title(self, title):
+        '''Set the title'''
+        self._title.value = title
+
+        if title is '':
+            self._title.layout.display = 'none'
+        else:
+            self._title.layout.display = None
 
     @property
     def default(self):

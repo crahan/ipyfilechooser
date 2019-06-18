@@ -4,6 +4,8 @@ A simple Python file chooser widget for use in Jupyter/IPython in conjunction wi
 
 When a typed filename matches an existing file entry in the current folder the entry will be highlighted. To emphasize the risk of overwriting existing files, the selected filepath is displayed in green if the file does not exist and orange if it does.
 
+[![Downloads](https://pepy.tech/badge/ipyfilechooser)](https://pepy.tech/project/ipyfilechooser)
+
 ## Usage
 
 ```

@@ -16,7 +16,7 @@ class FileChooser(VBox):
             title='',
             select_desc='Select',
             change_desc='Change',
-            show_hidden=False ,
+            show_hidden=False,
             **kwargs):
 
         self._default_path = path.rstrip(os.path.sep)

@@ -8,6 +8,7 @@ class FileChooser(VBox):
 
     _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
     _LBL_NOFILE = 'No file selected'
+    _LBL_NOFOLDER = 'No folder selected'
 
     def __init__(
             self,
@@ -17,6 +18,8 @@ class FileChooser(VBox):
             select_desc='Select',
             change_desc='Change',
             show_hidden=False,
+            include_files=True,
+            include_folders=True,
             **kwargs):
 
         self._default_path = path.rstrip(os.path.sep)
@@ -26,6 +29,11 @@ class FileChooser(VBox):
         self._show_hidden = show_hidden
         self._select_desc = select_desc
         self._change_desc = change_desc
+        self._include_files = include_files
+        self._include_folders = include_folders
+
+        if not include_folders and not include_files:
+            raise ValueError("You can't exclude both files and folders")
 
         # Widgets
         self._pathlist = Dropdown(
@@ -39,8 +47,9 @@ class FileChooser(VBox):
             placeholder='output filename',
             layout=Layout(
                 width='auto',
-                grid_area='filename'
-            )
+                grid_area='filename',
+                visibility='visible' if self._include_files else 'hidden',
+            ),
         )
         self._dircontent = Select(
             rows=8,
@@ -87,7 +96,7 @@ class FileChooser(VBox):
         # Selected file label
         self._label = HTML(
             value=self._LBL_TEMPLATE.format(
-                self._LBL_NOFILE,
+                self._LBL_NOFILE if self._include_files else self._LBL_NOFOLDER if self._include_folders else "",
                 'black'
             ),
             placeholder='',
@@ -163,7 +172,9 @@ class FileChooser(VBox):
         self._filename.value = filename
         self._dircontent.options = get_dir_contents(
             path,
-            hidden=self._show_hidden
+            hidden=self._show_hidden,
+            include_files=self._include_files,
+            include_folders=self._include_folders
         )
 
         # If the value in the filename Text box equals a value in the
@@ -196,7 +207,7 @@ class FileChooser(VBox):
             )
 
             # filename value is empty or equals the selected value
-            if (filename == '') or (os.path.join(path, filename) == selected):
+            if ((filename == '') or (os.path.join(path, filename) == selected)) and self._include_files:
                 self._select.disabled = True
             else:
                 self._select.disabled = False
@@ -242,7 +253,7 @@ class FileChooser(VBox):
             self._cancel.layout.display = None
 
             # Show the form with the correct path and filename
-            if self._selected_path and self._selected_filename:
+            if (self._selected_path and self._selected_filename) or (self._selected_path and not self._include_files):
                 path = self._selected_path
                 filename = self._selected_filename
             else:
@@ -288,7 +299,7 @@ class FileChooser(VBox):
         self._selected_filename = ''
 
         self._label.value = self._LBL_TEMPLATE.format(
-            self._LBL_NOFILE,
+            self._LBL_NOFILE if self._include_files else self._LBL_NOFOLDER if self._include_folders else "",
             'black'
         )
 

@@ -31,7 +31,7 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
-def get_dir_contents(path, hidden=False):
+def get_dir_contents(path, hidden=False, include_files=True, include_folders=True):
     '''Get directory contents'''
     files = list()
     dirs = list()
@@ -42,10 +42,10 @@ def get_dir_contents(path, hidden=False):
             if item.startswith('.') and not hidden:
                 append = False
             full_item = os.path.join(path, item)
-            if os.path.isdir(full_item) and append:
+            if os.path.isdir(full_item) and append and include_folders:
                 dirs.append(item)
-            elif append:
+            elif append and include_files:
                 files.append(item)
-        if has_parent(path):
+        if has_parent(path) and include_folders:
             dirs.insert(0, '..')
     return sorted(dirs) + sorted(files)

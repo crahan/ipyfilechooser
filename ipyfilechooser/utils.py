@@ -31,10 +31,11 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
-def get_dir_contents(path, hidden=False, include_files=True, include_folders=True):
+def get_dir_contents(path, hidden=False, include_files=True, include_folders=True, include_drives=True):
     '''Get directory contents'''
     files = list()
     dirs = list()
+    drives = list()
 
     if os.path.isdir(path):
         for item in os.listdir(path):
@@ -48,4 +49,25 @@ def get_dir_contents(path, hidden=False, include_files=True, include_folders=Tru
                 files.append(item)
         if has_parent(path) and include_folders:
             dirs.insert(0, '..')
-    return sorted(dirs) + sorted(files)
+        if not has_parent(path) and include_folders and include_drives:
+            drives = get_drive_letters()
+    return sorted(drives) + sorted(dirs) + sorted(files)
+
+def get_drive_letters():
+    import sys
+    if sys.platform == "win32":
+        #Windows has letters
+        import string
+        from ctypes import windll
+        drives = []
+        bitmask = windll.kernel32.GetLogicalDrives()
+        for letter in string.ascii_uppercase:
+            if bitmask & 1:
+                drives.append(letter + ":\\")
+            bitmask >>= 1
+        return drives
+    else:
+        #Unix does not have letters
+        return []
+
+

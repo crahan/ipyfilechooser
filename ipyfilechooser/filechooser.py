@@ -22,7 +22,7 @@ class FileChooser(VBox):
             include_folders=True,
             **kwargs):
 
-        self._default_path = path.rstrip(os.path.sep)
+        self._default_path = path #path.rstrip(os.path.sep)
         self._default_filename = filename
         self._selected_path = ''
         self._selected_filename = ''
@@ -275,6 +275,9 @@ class FileChooser(VBox):
                 self._selected_path,
                 self._selected_filename
             )
+
+            if not self._include_files and os.path.isdir(selected):
+                selected = selected.rstrip(os.path.sep)
 
             if os.path.isfile(selected):
                 self._label.value = self._LBL_TEMPLATE.format(

@@ -138,13 +138,13 @@ class FileChooser(VBox):
         )
 
         # Call VBox super class __init__
+        kwargs.setdefault('layout', Layout(width='auto'))
         super().__init__(
             children=[
                 self._title,
                 self._gb,
                 buttonbar,
             ],
-            layout=Layout(width='auto'),
             **kwargs
         )
 

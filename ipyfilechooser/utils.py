@@ -1,8 +1,9 @@
+"""Support functions for ipyfilechooser."""
 import os
 
 
 def get_subpaths(path):
-    '''Walk a path and return a list of subpaths'''
+    """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
 
@@ -16,23 +17,13 @@ def get_subpaths(path):
     return paths
 
 
-def update_path(path, item):
-    '''Update path with new item'''
-    if item == '..':
-        path = os.path.dirname(path)
-    else:
-        path = os.path.join(path, item)
-
-    return path
-
-
 def has_parent(path):
-    '''Check if a path has a parent folder'''
+    """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
 
 
 def get_dir_contents(path, hidden=False):
-    '''Get directory contents'''
+    """Get directory contents."""
     files = list()
     dirs = list()
 

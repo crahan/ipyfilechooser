@@ -31,7 +31,8 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
-def get_dir_contents(path, hidden=False, include_files=True, include_folders=True, include_drives=True):
+def get_dir_contents(path, hidden=False, include_files=True,
+                     include_folders=True, include_drives=True):
     """Get directory contents"""
     files = list()
     dirs = list()

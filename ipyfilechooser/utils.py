@@ -71,5 +71,3 @@ def get_drive_letters():
     else:
         # Unix does not have letters
         return []
-
-

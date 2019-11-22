@@ -22,7 +22,7 @@ class FileChooser(VBox):
             include_folders=True,
             **kwargs):
 
-        self._default_path = path #path.rstrip(os.path.sep)
+        self._default_path = path  # path.rstrip(os.path.sep)
         self._default_filename = filename
         self._selected_path = ''
         self._selected_filename = ''
@@ -97,8 +97,8 @@ class FileChooser(VBox):
         self._label = HTML(
             value=self._LBL_TEMPLATE.format(
                 self._LBL_NOFILE if self._include_files else
-                    self._LBL_NOFOLDER if self._include_folders else
-                    "",
+                self._LBL_NOFOLDER if self._include_folders else
+                "",
                 'black'
             ),
             placeholder='',
@@ -209,8 +209,9 @@ class FileChooser(VBox):
             )
 
             # filename value is empty or equals the selected value
-            if ((filename == '') or (os.path.join(path, filename) == selected)) and \
-                    self._include_files:
+            if ((filename == '') or
+                (os.path.join(path, filename) == selected)) \
+                    and self._include_files:
                 self._select.disabled = True
             else:
                 self._select.disabled = False

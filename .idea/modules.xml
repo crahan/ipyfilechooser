@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://S:/Jason Morgan/emc/.idea/emc.iml" filepath="S:/Jason Morgan/emc/.idea/emc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ipyfilechooser.iml" filepath="$PROJECT_DIR$/.idea/ipyfilechooser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pysidl/.idea/pysidl.iml" filepath="$PROJECT_DIR$/../pysidl/.idea/pysidl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Python/test1/.idea/test1.iml" filepath="$PROJECT_DIR$/../Python/test1/.idea/test1.iml" />
+    </modules>
+  </component>
+</project>

@@ -149,7 +149,7 @@ class FileChooser(VBox):
         )
 
     def _set_form_values(self, path, filename):
-        '''Set the form values'''
+        """Set the form values"""
 
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.
@@ -213,14 +213,14 @@ class FileChooser(VBox):
                 self._select.disabled = False
 
     def _on_pathlist_select(self, change):
-        '''Handler for when a new path is selected'''
+        """Handler for when a new path is selected"""
         self._set_form_values(
             change['new'],
             self._filename.value
         )
 
     def _on_dircontent_select(self, change):
-        '''Handler for when a folder entry is selected'''
+        """Handler for when a folder entry is selected"""
         new_path = update_path(
             self._pathlist.value,
             change['new']
@@ -240,14 +240,14 @@ class FileChooser(VBox):
         )
 
     def _on_filename_change(self, change):
-        '''Handler for when the filename field changes'''
+        """Handler for when the filename field changes"""
         self._set_form_values(
             self._pathlist.value,
             change['new']
         )
 
     def _on_select_click(self, b):
-        '''Handler for when the select button is clicked'''
+        """Handler for when the select button is clicked"""
         if self._gb.layout.display is 'none':
             self._gb.layout.display = None
             self._cancel.layout.display = None
@@ -291,13 +291,13 @@ class FileChooser(VBox):
                 )
 
     def _on_cancel_click(self, b):
-        '''Handler for when the cancel button is clicked'''
+        """Handler for when the cancel button is clicked"""
         self._gb.layout.display = 'none'
         self._cancel.layout.display = 'none'
         self._select.disabled = False
 
     def reset(self, path=None, filename=None):
-        '''Reset the form to the default path and filename'''
+        """Reset the form to the default path and filename"""
         self._selected_path = ''
         self._selected_filename = ''
 
@@ -318,7 +318,7 @@ class FileChooser(VBox):
         )
 
     def refresh(self):
-        '''Re-render the form'''
+        """Re-render the form"""
         self._set_form_values(
             self._pathlist.value,
             self._filename.value
@@ -326,33 +326,33 @@ class FileChooser(VBox):
 
     @property
     def show_hidden(self):
-        '''Get current number of rows'''
+        """Get current number of rows"""
         return self._show_hidden
 
     @show_hidden.setter
     def show_hidden(self, hidden):
-        '''Set number of rows'''
+        """Set number of rows"""
         self._show_hidden = hidden
         self.refresh()
 
     @property
     def rows(self):
-        '''Get current number of rows'''
+        """Get current number of rows"""
         return self._dircontent.rows
 
     @rows.setter
     def rows(self, rows):
-        '''Set number of rows'''
+        """Set number of rows"""
         self._dircontent.rows = rows
 
     @property
     def title(self):
-        '''Get the title'''
+        """Get the title"""
         return self._title.value
 
     @title.setter
     def title(self, title):
-        '''Set the title'''
+        """Set the title"""
         self._title.value = title
 
         if title is '':
@@ -362,7 +362,7 @@ class FileChooser(VBox):
 
     @property
     def default(self):
-        '''Get the default value'''
+        """Get the default value"""
         return os.path.join(
             self._default_path,
             self._default_filename
@@ -370,12 +370,12 @@ class FileChooser(VBox):
 
     @property
     def default_path(self):
-        '''Get the default_path value'''
+        """Get the default_path value"""
         return self._default_path
 
     @default_path.setter
     def default_path(self, path):
-        '''Set the default_path'''
+        """Set the default_path"""
         self._default_path = path.rstrip(os.path.sep)
         self._default = os.path.join(
             self._default_path,
@@ -388,12 +388,12 @@ class FileChooser(VBox):
 
     @property
     def default_filename(self):
-        '''Get the default_filename value'''
+        """Get the default_filename value"""
         return self._default_filename
 
     @default_filename.setter
     def default_filename(self, filename):
-        '''Set the default_filename'''
+        """Set the default_filename"""
         self._default_filename = filename
         self._default = os.path.join(
             self._pathlist.value,
@@ -406,7 +406,7 @@ class FileChooser(VBox):
 
     @property
     def selected(self):
-        '''Get selected value'''
+        """Get selected value"""
         return os.path.join(
             self._selected_path,
             self._selected_filename
@@ -414,12 +414,12 @@ class FileChooser(VBox):
 
     @property
     def selected_path(self):
-        '''Get selected_path value'''
+        """Get selected_path value"""
         return self._selected_path
 
     @property
     def selected_filename(self):
-        '''Get the selected_filename'''
+        """Get the selected_filename"""
         return self._selected_filename
 
     def __repr__(self):

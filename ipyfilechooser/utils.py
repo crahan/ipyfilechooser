@@ -2,7 +2,7 @@ import os
 
 
 def get_subpaths(path):
-    '''Walk a path and return a list of subpaths'''
+    """Walk a path and return a list of subpaths"""
     if os.path.isfile(path):
         path = os.path.dirname(path)
 
@@ -17,7 +17,7 @@ def get_subpaths(path):
 
 
 def update_path(path, item):
-    '''Update path with new item'''
+    """Update path with new item"""
     if item == '..':
         path = os.path.dirname(path)
     else:
@@ -27,12 +27,12 @@ def update_path(path, item):
 
 
 def has_parent(path):
-    '''Check if a path has a parent folder'''
+    """Check if a path has a parent folder"""
     return os.path.basename(path) != ''
 
 
 def get_dir_contents(path, hidden=False, include_files=True, include_folders=True, include_drives=True):
-    '''Get directory contents'''
+    """Get directory contents"""
     files = list()
     dirs = list()
     drives = list()
@@ -53,10 +53,11 @@ def get_dir_contents(path, hidden=False, include_files=True, include_folders=Tru
             drives = get_drive_letters()
     return sorted(drives) + sorted(dirs) + sorted(files)
 
+
 def get_drive_letters():
     import sys
     if sys.platform == "win32":
-        #Windows has letters
+        # Windows has letters
         import string
         from ctypes import windll
         drives = []
@@ -67,7 +68,7 @@ def get_drive_letters():
             bitmask >>= 1
         return drives
     else:
-        #Unix does not have letters
+        # Unix does not have letters
         return []
 
 

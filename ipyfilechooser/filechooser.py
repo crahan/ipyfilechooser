@@ -96,7 +96,9 @@ class FileChooser(VBox):
         # Selected file label
         self._label = HTML(
             value=self._LBL_TEMPLATE.format(
-                self._LBL_NOFILE if self._include_files else self._LBL_NOFOLDER if self._include_folders else "",
+                self._LBL_NOFILE if self._include_files else
+                    self._LBL_NOFOLDER if self._include_folders else
+                    "",
                 'black'
             ),
             placeholder='',
@@ -207,7 +209,8 @@ class FileChooser(VBox):
             )
 
             # filename value is empty or equals the selected value
-            if ((filename == '') or (os.path.join(path, filename) == selected)) and self._include_files:
+            if ((filename == '') or (os.path.join(path, filename) == selected)) and \
+                    self._include_files:
                 self._select.disabled = True
             else:
                 self._select.disabled = False
@@ -253,7 +256,8 @@ class FileChooser(VBox):
             self._cancel.layout.display = None
 
             # Show the form with the correct path and filename
-            if (self._selected_path and self._selected_filename) or (self._selected_path and not self._include_files):
+            if (self._selected_path and self._selected_filename) or \
+                    (self._selected_path and not self._include_files):
                 path = self._selected_path
                 filename = self._selected_filename
             else:
@@ -302,7 +306,9 @@ class FileChooser(VBox):
         self._selected_filename = ''
 
         self._label.value = self._LBL_TEMPLATE.format(
-            self._LBL_NOFILE if self._include_files else self._LBL_NOFOLDER if self._include_folders else "",
+            self._LBL_NOFILE if self._include_files else
+            self._LBL_NOFOLDER if self._include_folders else
+            "",
             'black'
         )
 

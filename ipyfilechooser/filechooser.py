@@ -20,7 +20,6 @@ class FileChooser(VBox):
             change_desc='Change',
             show_hidden=False,
             select_default=False,
-            layout=Layout(width='auto'),
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
@@ -143,7 +142,7 @@ class FileChooser(VBox):
                 self._gb,
                 buttonbar,
             ],
-            layout=layout,
+            layout=Layout(width='auto'),
             **kwargs
         )
 

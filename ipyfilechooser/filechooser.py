@@ -68,7 +68,7 @@ class FileChooser(VBox):
             value=title
         )
 
-        if title is '':
+        if title == '':
             self._title.layout.display = 'none'
 
         # Widget observe handlers
@@ -252,7 +252,7 @@ class FileChooser(VBox):
 
     def _on_select_click(self, b):
         """Handle select button clicks."""
-        if self._gb.layout.display is 'none':
+        if self._gb.layout.display == 'none':
             # If not shown, open the dialog
             self._show_dialog()
         else:
@@ -365,7 +365,7 @@ class FileChooser(VBox):
         """Set the title."""
         self._title.value = title
 
-        if title is '':
+        if title == '':
             self._title.layout.display = 'none'
         else:
             self._title.layout.display = None

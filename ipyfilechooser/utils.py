@@ -1,4 +1,4 @@
-"""Support functions for ipyfilechooser."""
+"""Helper functions for ipyfilechooser."""
 import os
 
 

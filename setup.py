@@ -9,25 +9,25 @@ def read(fname):
 
 
 setup(
-    name="ipyfilechooser",
-    version="0.2.0",
-    author="Thomas Bouve (@crahan)",
-    author_email="crahan@n00.be",
+    name='ipyfilechooser',
+    version='0.3.0',
+    author='Thomas Bouve (@crahan)',
+    author_email='crahan@n00.be',
     description=(
-        "Python file chooser widget for use in "
-        "Jupyter/IPython in conjunction with ipywidgets"
+        'Python file chooser widget for use in '
+        'Jupyter/IPython in conjunction with ipywidgets'
     ),
     long_description=read('README.md'),
-    long_description_content_type="text/markdown",
-    url="https://github.com/crahan/ipyfilechooser",
-    license="MIT",
+    long_description_content_type='text/markdown',
+    url='https://github.com/crahan/ipyfilechooser',
+    license='MIT',
     packages=find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Development Status :: 4 - Beta",
-        "Intended Audience :: Developers",
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
     ],
     install_requires=[
         'ipywidgets'

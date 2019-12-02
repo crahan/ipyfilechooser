@@ -1,4 +1,3 @@
-"""FileChooser."""
 import os
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, HBox, VBox

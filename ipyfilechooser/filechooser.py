@@ -28,6 +28,7 @@ class FileChooser(VBox):
         self._show_hidden = show_hidden
         self._select_desc = select_desc
         self._change_desc = change_desc
+        self._callback = None
 
         # Widgets
         self._pathlist = Dropdown(
@@ -257,6 +258,9 @@ class FileChooser(VBox):
         else:
             # If shown, close the dialog and apply the selection
             self._apply_selection()
+            # Execute callback function
+            if self._callback is not None:
+                self._callback()
 
     def _show_dialog(self):
         """Show the dialog."""
@@ -434,3 +438,7 @@ class FileChooser(VBox):
             self._show_hidden
         )
         return str_
+
+    def register_callback(self, callback):
+        """Register a callback function."""
+        self._callback = callback

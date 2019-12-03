@@ -18,7 +18,9 @@ def get_subpaths(path):
 
     try:
         # Add Windows drive letters, but remove the current drive
-        paths.extend(get_drive_letters().remove(paths[-1]))
+        drives = get_drive_letters()
+        drives.remove(paths[-1])
+        paths.extend(drives)
     except ValueError:
         pass
     return paths

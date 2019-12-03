@@ -2,9 +2,6 @@
 import os
 import string
 import sys
-# Import windll when on Windows
-if sys.platform == "win32":
-    from ctypes import windll
 
 
 def get_subpaths(path):
@@ -21,7 +18,7 @@ def get_subpaths(path):
 
     try:
         # Add Windows drive letters, but remove the current drive
-        paths.append(get_drive_letters().remove(paths[-1]))
+        paths.append(get_drive_letters())
     except ValueError:
         pass
     return paths

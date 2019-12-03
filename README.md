@@ -2,7 +2,9 @@
 
 A simple Python file chooser widget for use in Jupyter/IPython in conjunction with ipywidgets. The selected path and file are available via `.selected_path` and `.selected_filename` respectvely or as a single combined filepath via `.selected`. The dialog can be reset to its default path and filename by using `.reset()`. 
 
-When a typed filename matches an existing file entry in the current folder the entry will be highlighted. To emphasize the risk of overwriting existing files, the selected filepath is displayed in green if the file does not exist and orange if it does.
+When a typed filename matches an existing file entry in the current folder the entry will be highlighted. If a typed filename matches a folder entry in the current view the selection button is disabled ensure the user is aware of the match. To select a folder simply leave the filename field empty.
+
+To emphasize the risk of overwriting existing files, the selected filepath is displayed in green if the file does not exist and orange if it does. 
 
 [![Downloads](https://pepy.tech/badge/ipyfilechooser)](https://pepy.tech/project/ipyfilechooser)
 
@@ -68,3 +70,16 @@ fc.selected_filename
 ### Quick navigation dropdown
 
 ![Screenshot 5](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_5.png)
+
+
+## Release notes
+
+### 0.3.0
+
+- Ability to select a folder
+- Support for Windows drive letters
+- Option to use the defaults as the selected value
+
+### 0.2.0
+
+- First public release

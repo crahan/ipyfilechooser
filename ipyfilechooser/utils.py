@@ -1,8 +1,11 @@
+"""Helper functions for ipyfilechooser."""
 import os
+import string
+import sys
 
 
 def get_subpaths(path):
-    '''Walk a path and return a list of subpaths'''
+    """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
 
@@ -13,26 +16,23 @@ def get_subpaths(path):
         paths.append(path)
         path, tail = os.path.split(path)
 
+    try:
+        # Add Windows drive letters, but remove the current drive
+        drives = get_drive_letters()
+        drives.remove(paths[-1])
+        paths.extend(drives)
+    except ValueError:
+        pass
     return paths
 
 
-def update_path(path, item):
-    '''Update path with new item'''
-    if item == '..':
-        path = os.path.dirname(path)
-    else:
-        path = os.path.join(path, item)
-
-    return path
-
-
 def has_parent(path):
-    '''Check if a path has a parent folder'''
+    """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
 
 
 def get_dir_contents(path, hidden=False):
-    '''Get directory contents'''
+    """Get directory contents."""
     files = list()
     dirs = list()
 
@@ -49,3 +49,16 @@ def get_dir_contents(path, hidden=False):
         if has_parent(path):
             dirs.insert(0, '..')
     return sorted(dirs) + sorted(files)
+
+
+def get_drive_letters():
+    """Get drive letters."""
+    if sys.platform == "win32":
+        # Windows has drive letters
+        return [
+            '%s:\\' % d for d in string.ascii_uppercase
+            if os.path.exists('%s:' % d)
+        ]
+    else:
+        # Unix does not have drive letters
+        return []

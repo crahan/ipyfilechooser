@@ -1,5 +1,10 @@
 """Helper functions for ipyfilechooser."""
 import os
+import string
+import sys
+# Import windll when on Windows
+if sys.platform == "win32":
+    from ctypes import windll
 
 
 def get_subpaths(path):
@@ -14,6 +19,11 @@ def get_subpaths(path):
         paths.append(path)
         path, tail = os.path.split(path)
 
+    try:
+        # Add Windows drive letters, but remove the current drive
+        paths.append(get_drive_letters().remove(paths[-1]))
+    except ValueError:
+        pass
     return paths
 
 
@@ -40,3 +50,19 @@ def get_dir_contents(path, hidden=False):
         if has_parent(path):
             dirs.insert(0, '..')
     return sorted(dirs) + sorted(files)
+
+
+def get_drive_letters():
+    """Get drive letters."""
+    if sys.platform == "win32":
+        # Windows has drive letters
+        drives = []
+        bitmask = windll.kernel32.GetLogicalDrives()
+        for letter in string.ascii_uppercase:
+            if bitmask & 1:
+                drives.append(letter + ":\\")
+            bitmask >>= 1
+        return drives.sort()
+    else:
+        # Unix does not have drive letters
+        return []

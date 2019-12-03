@@ -21,7 +21,7 @@ def get_subpaths(path):
 
     try:
         # Add Windows drive letters, but remove the current drive
-        paths.append(get_drive_letters())
+        paths.append(get_drive_letters().remove(paths[-1]))
     except ValueError:
         pass
     return paths
@@ -56,13 +56,10 @@ def get_drive_letters():
     """Get drive letters."""
     if sys.platform == "win32":
         # Windows has drive letters
-        drives = []
-        bitmask = windll.kernel32.GetLogicalDrives()
-        for letter in string.ascii_uppercase:
-            if bitmask & 1:
-                drives.append(letter + ":\\")
-            bitmask >>= 1
-        return drives.sort()
+        return [
+            '%s:\\' % d for d in string.ascii_uppercase
+            if os.path.exists('%s:' % d)
+        ]
     else:
         # Unix does not have drive letters
         return []

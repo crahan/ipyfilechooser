@@ -35,6 +35,13 @@ fc.show_hidden = True
 
 # Change the title (use '' to hide)
 fc.title = '<b>FileChooser title</b>'
+
+# Sample callback function
+def change_title():
+    fc.title = '<b>Callback function executed</b>'
+
+# Register callback function
+fc.register_callback(change_title)
 ```
 
 ## Functions and variables

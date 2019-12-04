@@ -42,6 +42,7 @@ fc.title = '<b>FileChooser title</b>'
 ```
 fc.reset()
 fc.refresh()
+fc.register_callback(function_name)
 fc.show_hidden
 fc.rows
 fc.title
@@ -73,6 +74,10 @@ fc.selected_filename
 
 
 ## Release notes
+
+### 0.3.1
+
+- Option to register a callback function (`register_callback(function_name)`)
 
 ### 0.3.0
 

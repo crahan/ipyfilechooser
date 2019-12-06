@@ -82,6 +82,10 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.3.2
+
+- Return `None` if file is not selected (@danjjl)
+
 ### 0.3.1
 
 - Option to register a callback function (`register_callback(function_name)`)

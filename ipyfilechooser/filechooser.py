@@ -412,10 +412,13 @@ class FileChooser(VBox):
     @property
     def selected(self):
         """Get selected value."""
-        return os.path.join(
-            self._selected_path,
-            self._selected_filename
-        )
+        try:
+            return os.path.join(
+                self._selected_path,
+                self._selected_filename
+            )
+        except TypeError:
+            return None
 
     @property
     def selected_path(self):

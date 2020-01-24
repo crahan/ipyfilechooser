@@ -11,3 +11,6 @@
 #Ignore build and dist folders
 build/*
 dist/*
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints

@@ -260,7 +260,11 @@ class FileChooser(VBox):
             self._apply_selection()
             # Execute callback function
             if self._callback is not None:
-                self._callback()
+                try:
+                    self._callback(self)
+                except TypeError:
+                    # Support previous behaviour of not passing self
+                    self._callback()
 
     def _show_dialog(self):
         """Show the dialog."""

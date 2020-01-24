@@ -31,7 +31,7 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
-def get_dir_contents(path, hidden=False):
+def get_dir_contents(path, hidden=False, prepend_icons=False):
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -48,7 +48,13 @@ def get_dir_contents(path, hidden=False):
                 files.append(item)
         if has_parent(path):
             dirs.insert(0, '..')
-    return sorted(dirs) + sorted(files)
+    if prepend_icons:
+        return prepend_dir_icons(sorted(dirs)) + sorted(files)
+    else:
+        return sorted(dirs) + sorted(files)
+
+def prepend_dir_icons(dir_list):
+   return ["\U0001F4C1 " + dirname for dirname in dir_list]
 
 
 def get_drive_letters():

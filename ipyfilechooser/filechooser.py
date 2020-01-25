@@ -258,6 +258,7 @@ class FileChooser(VBox):
         else:
             # If shown, close the dialog and apply the selection
             self._apply_selection()
+
             # Execute callback function
             if self._callback is not None:
                 try:

@@ -84,7 +84,7 @@ fc.selected_filename
 
 ### 0.3.3
 
-- Option added to add `self` as an argument to the callback function (@ptooley) https://github.com/crahan/ipyfilechooser/pull/14 
+- Option added to add `self` as an argument to the callback function (@ptooley)
 
 ### 0.3.2
 

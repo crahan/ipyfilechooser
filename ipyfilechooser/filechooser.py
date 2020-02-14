@@ -97,7 +97,7 @@ class FileChooser(VBox):
                 'black'
             ),
             placeholder='',
-            description='',
+            description=''
         )
 
         # Layout
@@ -113,10 +113,10 @@ class FileChooser(VBox):
                 grid_gap='0px 0px',
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
-                grid_template_areas="""
+                grid_template_areas='''
                     'pathlist filename'
                     'dircontent dircontent'
-                    """
+                    '''
             )
         )
         buttonbar = HBox(
@@ -125,7 +125,7 @@ class FileChooser(VBox):
                 self._cancel,
                 self._label
             ],
-            layout=Layout(width='auto'),
+            layout=Layout(width='auto')
         )
 
         # Call setter to set initial form values
@@ -188,8 +188,7 @@ class FileChooser(VBox):
         # If the value in the filename Text box equals a value in the
         # Select box and the entry is a file then select the entry.
         if ((filename in dircontent_real_names) and
-                os.path.isfile(os.path.join(path, filename))
-        ):
+                os.path.isfile(os.path.join(path, filename))):
             self._dircontent.value = self._map_name_to_disp[filename]
         else:
             self._dircontent.value = None
@@ -219,7 +218,7 @@ class FileChooser(VBox):
 
             # Only check selected if selected is set
             if ((self._selected_path is not None) and
-                    self._selected_filename is not None):
+                    (self._selected_filename is not None)):
                 selected = os.path.join(
                     self._selected_path,
                     self._selected_filename

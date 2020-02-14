@@ -31,7 +31,7 @@ class FileChooser(VBox):
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._callback = None
-        self._dir_icons = use_dir_icons
+        self._use_dir_icons = use_dir_icons
 
         # Widgets
         self._pathlist = Dropdown(
@@ -170,20 +170,36 @@ class FileChooser(VBox):
         self._pathlist.options = get_subpaths(path)
         self._pathlist.value = path
         self._filename.value = filename
+
+        # file/folder real names
         dircontent_real_names = get_dir_contents(
-            path, hidden=self._show_hidden, prepend_icons=False
+            path,
+            hidden=self._show_hidden,
+            prepend_icons=False
         )
+
+        # file/folder display names
         dircontent_display_names = get_dir_contents(
-            path, hidden=self._show_hidden, prepend_icons=self._dir_icons
+            path,
+            hidden=self._show_hidden,
+            prepend_icons=self._use_dir_icons
         )
+
+        # Dict to map real names to display names
         self._map_name_to_disp = {
-            disp: val
-            for disp, val in zip(dircontent_real_names,
-                                 dircontent_display_names)
+            real_name: disp_name
+            for real_name, disp_name in zip(
+                dircontent_real_names,
+                dircontent_display_names
+            )
         }
+
+        # Dict to map display names to real names
         self._map_disp_to_name = dict(
             reversed(item) for item in self._map_name_to_disp.items()
         )
+
+        # Set _dircontent form value to display names
         self._dircontent.options = dircontent_display_names
 
         # If the value in the filename Text box equals a value in the
@@ -242,7 +258,9 @@ class FileChooser(VBox):
         """Handle selecting a folder entry."""
         new_path = os.path.realpath(
             os.path.join(
-                self._pathlist.value, self._map_disp_to_name[change['new']])
+                self._pathlist.value,
+                self._map_disp_to_name[change['new']]
+            )
         )
 
         # Check if folder or file

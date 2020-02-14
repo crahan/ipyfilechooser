@@ -79,8 +79,16 @@ fc.selected_filename
 
 ![Screenshot 5](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_5.png)
 
+### Use folder icons
+
+![Screenshot 6](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_6.png)
+
 
 ## Release notes
+
+### 0.3.4
+
+- Option added to display folder icons (@ptooley)
 
 ### 0.3.3
 

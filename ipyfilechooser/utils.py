@@ -55,12 +55,13 @@ def get_dir_contents(path, hidden=False, prepend_icons=False):
 
 
 def prepend_dir_icons(dir_list):
-    return ["\U0001F4C1 " + dirname for dirname in dir_list]
+    """Prepend unicode folder icon to directory names."""
+    return ['\U0001F4C1 ' + dirname for dirname in dir_list]
 
 
 def get_drive_letters():
     """Get drive letters."""
-    if sys.platform == "win32":
+    if sys.platform == 'win32':
         # Windows has drive letters
         return [
             '%s:\\' % d for d in string.ascii_uppercase

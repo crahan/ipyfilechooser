@@ -19,7 +19,9 @@ class FileChooser(VBox):
             change_desc='Change',
             show_hidden=False,
             select_default=False,
-            **kwargs):
+            use_dir_icons=False,
+            **kwargs
+    ):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename
@@ -29,6 +31,7 @@ class FileChooser(VBox):
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._callback = None
+        self._dir_icons = use_dir_icons
 
         # Widgets
         self._pathlist = Dropdown(
@@ -167,16 +170,27 @@ class FileChooser(VBox):
         self._pathlist.options = get_subpaths(path)
         self._pathlist.value = path
         self._filename.value = filename
-        self._dircontent.options = get_dir_contents(
-            path,
-            hidden=self._show_hidden
+        dircontent_real_names = get_dir_contents(
+            path, hidden=self._show_hidden, prepend_icons=False
         )
+        dircontent_display_names = get_dir_contents(
+            path, hidden=self._show_hidden, prepend_icons=self._dir_icons
+        )
+        self._map_name_to_disp = {
+            disp: val
+            for disp, val in zip(dircontent_real_names,
+                                 dircontent_display_names)
+        }
+        self._map_disp_to_name = dict(
+            reversed(item) for item in self._map_name_to_disp.items()
+        )
+        self._dircontent.options = dircontent_display_names
 
         # If the value in the filename Text box equals a value in the
         # Select box and the entry is a file then select the entry.
-        if ((filename in self._dircontent.options) and
+        if ((filename in dircontent_real_names) and
                 os.path.isfile(os.path.join(path, filename))):
-            self._dircontent.value = filename
+            self._dircontent.value = self._map_name_to_disp[filename]
         else:
             self._dircontent.value = None
 
@@ -199,8 +213,8 @@ class FileChooser(VBox):
             # Disable the select button if path and filename
             # - equal an existing folder in the current view
             # - equal the already selected values
-            check1 = (filename in self._dircontent.options)
-            check2 = (os.path.isdir(os.path.join(path, filename)))
+            check1 = filename in dircontent_real_names
+            check2 = os.path.isdir(os.path.join(path, filename))
             check3 = False
 
             # Only check selected if selected is set
@@ -210,7 +224,7 @@ class FileChooser(VBox):
                     self._selected_path,
                     self._selected_filename
                 )
-                check3 = (os.path.join(path, filename) == selected)
+                check3 = os.path.join(path, filename) == selected
 
             if (check1 and check2) or check3:
                 self._select.disabled = True
@@ -227,7 +241,8 @@ class FileChooser(VBox):
     def _on_dircontent_select(self, change):
         """Handle selecting a folder entry."""
         new_path = os.path.realpath(
-            os.path.join(self._pathlist.value, change['new'])
+            os.path.join(
+                self._pathlist.value, self._map_disp_to_name[change['new']])
         )
 
         # Check if folder or file
@@ -236,7 +251,7 @@ class FileChooser(VBox):
             filename = self._filename.value
         elif os.path.isfile(new_path):
             path = self._pathlist.value
-            filename = change['new']
+            filename = self._map_disp_to_name[change['new']]
 
         self._set_form_values(
             path,

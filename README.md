@@ -33,6 +33,9 @@ fc.reset(path='/Users/crahan/', filename='output.txt')
 # Change hidden files
 fc.show_hidden = True
 
+# Show or hide folder icons
+fc.use_dir_icons = True
+
 # Change the title (use '' to hide)
 fc.title = '<b>FileChooser title</b>'
 
@@ -51,6 +54,7 @@ fc.reset()
 fc.refresh()
 fc.register_callback(function_name)
 fc.show_hidden
+fc.use_dir_icons
 fc.rows
 fc.title
 fc.default

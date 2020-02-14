@@ -377,13 +377,24 @@ class FileChooser(VBox):
 
     @property
     def show_hidden(self):
-        """Get current number of rows."""
+        """Get _show_hidden value."""
         return self._show_hidden
 
     @show_hidden.setter
     def show_hidden(self, hidden):
-        """Set number of rows."""
+        """Set _show_hidden value."""
         self._show_hidden = hidden
+        self.refresh()
+
+    @property
+    def use_dir_icons(self):
+        """Get _use_dir_icons value."""
+        return self._use_dir_icons
+
+    @use_dir_icons.setter
+    def use_dir_icons(self, dir_icons):
+        """Set _use_dir_icons value."""
+        self._use_dir_icons = dir_icons
         self.refresh()
 
     @property

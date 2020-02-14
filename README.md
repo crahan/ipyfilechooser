@@ -37,8 +37,8 @@ fc.show_hidden = True
 fc.title = '<b>FileChooser title</b>'
 
 # Sample callback function
-def change_title():
-    fc.title = '<b>Callback function executed</b>'
+def change_title(chooser):
+    chooser.title = '<b>Callback function executed</b>'
 
 # Register callback function
 fc.register_callback(change_title)
@@ -81,6 +81,10 @@ fc.selected_filename
 
 
 ## Release notes
+
+### 0.3.3
+
+- Option added to add `self` as an argument to the callback function (@ptooley)
 
 ### 0.3.2
 

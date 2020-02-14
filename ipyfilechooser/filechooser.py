@@ -178,7 +178,8 @@ class FileChooser(VBox):
         )
         self._map_name_to_disp = {
             disp: val
-            for disp, val in zip(dircontent_real_names, dircontent_display_names)
+            for disp, val in zip(dircontent_real_names,
+                                 dircontent_display_names)
         }
         self._map_disp_to_name = dict(
             reversed(item) for item in self._map_name_to_disp.items()
@@ -240,7 +241,8 @@ class FileChooser(VBox):
     def _on_dircontent_select(self, change):
         """Handle selecting a folder entry."""
         new_path = os.path.realpath(
-            os.path.join(self._pathlist.value, self._map_disp_to_name[change['new']])
+            os.path.join(
+                self._pathlist.value, self._map_disp_to_name[change['new']])
         )
 
         # Check if folder or file

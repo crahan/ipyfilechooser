@@ -20,6 +20,7 @@ class FileChooser(VBox):
             show_hidden=False,
             select_default=False,
             use_dir_icons=False,
+            show_only_folders=False,
             **kwargs
     ):
         """Initialize FileChooser object."""
@@ -32,6 +33,7 @@ class FileChooser(VBox):
         self._change_desc = change_desc
         self._callback = None
         self._use_dir_icons = use_dir_icons
+        self._show_only_folders = show_only_folders
 
         # Widgets
         self._pathlist = Dropdown(
@@ -175,14 +177,16 @@ class FileChooser(VBox):
         dircontent_real_names = get_dir_contents(
             path,
             hidden=self._show_hidden,
-            prepend_icons=False
+            prepend_icons=False,
+            show_only_folders=self._show_only_folders
         )
 
         # file/folder display names
         dircontent_display_names = get_dir_contents(
             path,
             hidden=self._show_hidden,
-            prepend_icons=self._use_dir_icons
+            prepend_icons=self._use_dir_icons,
+            show_only_folders=self._show_only_folders
         )
 
         # Dict to map real names to display names
@@ -478,6 +482,20 @@ class FileChooser(VBox):
     def selected_filename(self):
         """Get the selected_filename."""
         return self._selected_filename
+
+    @property
+    def show_only_folders(self):
+        """Get show_only_folders property value."""
+        return self._show_only_folders
+
+    @show_only_folders.setter
+    def show_only_folders(self, flag):
+        """Set show_only_folders property value."""
+        self._show_only_folders = flag
+        self._set_form_values(
+            self._selected_path,
+            self._selected_filename
+        )
 
     def __repr__(self):
         """Build string representation."""

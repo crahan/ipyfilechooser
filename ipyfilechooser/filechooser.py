@@ -334,16 +334,18 @@ class FileChooser(VBox):
             self._selected_filename
         )
 
-        if os.path.isfile(selected):
-            self._label.value = self._LBL_TEMPLATE.format(
-                selected,
-                'orange'
-            )
+        if self._show_only_folders:
+            overwrite_flag = os.path.exists(selected)
         else:
-            self._label.value = self._LBL_TEMPLATE.format(
-                selected,
-                'green'
-            )
+            overwrite_flag = os.path.isfile(selected)
+        if overwrite_flag:
+            label_color = 'orange'
+        else:
+            label_color = 'green'
+        self._label.value = self._LBL_TEMPLATE.format(
+            selected,
+            label_color
+        )
 
     def _on_cancel_click(self, b):
         """Handle cancel button clicks."""

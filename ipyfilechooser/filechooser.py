@@ -48,7 +48,8 @@ class FileChooser(VBox):
             layout=Layout(
                 width='auto',
                 grid_area='filename'
-            )
+            ),
+            disabled=self._show_only_folders
         )
         self._dircontent = Select(
             rows=8,
@@ -494,6 +495,7 @@ class FileChooser(VBox):
     def show_only_folders(self, flag):
         """Set show_only_folders property value."""
         self._show_only_folders = flag
+        self._filename.disabled = self._show_only_folders
         self._set_form_values(
             self._selected_path,
             self._selected_filename

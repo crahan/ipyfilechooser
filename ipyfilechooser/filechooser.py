@@ -47,7 +47,8 @@ class FileChooser(VBox):
             placeholder='output filename',
             layout=Layout(
                 width='auto',
-                grid_area='filename'
+                grid_area='filename',
+                display=(None, "none")[self._show_only_folders]
             ),
             disabled=self._show_only_folders
         )
@@ -117,11 +118,14 @@ class FileChooser(VBox):
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
                 grid_template_areas='''
-                    'pathlist filename'
+                    'pathlist {}'
                     'dircontent dircontent'
-                    '''
+                    '''.format(
+                        ('filename', 'pathlist')[self._show_only_folders]
+                )
             )
         )
+
         buttonbar = HBox(
             children=[
                 self._select,
@@ -177,7 +181,7 @@ class FileChooser(VBox):
         # file/folder real names
         dircontent_real_names = get_dir_contents(
             path,
-            hidden=self._show_hidden,
+            show_hidden=self._show_hidden,
             prepend_icons=False,
             show_only_folders=self._show_only_folders
         )
@@ -185,7 +189,7 @@ class FileChooser(VBox):
         # file/folder display names
         dircontent_display_names = get_dir_contents(
             path,
-            hidden=self._show_hidden,
+            show_hidden=self._show_hidden,
             prepend_icons=self._use_dir_icons,
             show_only_folders=self._show_only_folders
         )
@@ -320,6 +324,10 @@ class FileChooser(VBox):
             path = self._default_path
             filename = self._default_filename
 
+        # When we show the dialog in folder only mode, zero out the filename
+        if self._show_only_folders:
+            filename = ''
+
         self._set_form_values(path, filename)
 
     def _apply_selection(self):
@@ -335,18 +343,16 @@ class FileChooser(VBox):
             self._selected_filename
         )
 
-        if self._show_only_folders:
-            overwrite_flag = os.path.exists(selected)
+        if os.path.isfile(selected):
+            self._label.value = self._LBL_TEMPLATE.format(
+                selected,
+                'orange'
+            )
         else:
-            overwrite_flag = os.path.isfile(selected)
-        if overwrite_flag:
-            label_color = 'orange'
-        else:
-            label_color = 'green'
-        self._label.value = self._LBL_TEMPLATE.format(
-            selected,
-            label_color
-        )
+            self._label.value = self._LBL_TEMPLATE.format(
+                selected,
+                'green'
+            )
 
     def _on_cancel_click(self, b):
         """Handle cancel button clicks."""
@@ -356,9 +362,11 @@ class FileChooser(VBox):
 
     def reset(self, path=None, filename=None):
         """Reset the form to the default path and filename."""
-        self._selected_path = ''
-        self._selected_filename = ''
+        self._selected_path = None
+        self._selected_filename = None
 
+        # Reset select button and label
+        self._select.description = self._select_desc
         self._label.value = self._LBL_TEMPLATE.format(
             self._LBL_NOFILE,
             'black'
@@ -370,9 +378,15 @@ class FileChooser(VBox):
         if filename is not None:
             self._default_filename = filename
 
+        # Set a proper filename value
+        if self._show_only_folders:
+            filename = ''
+        else:
+            filename = self._default_filename
+
         self._set_form_values(
             self._default_path,
-            self._default_filename
+            filename
         )
 
     def refresh(self):
@@ -466,6 +480,27 @@ class FileChooser(VBox):
         )
 
     @property
+    def show_only_folders(self):
+        """Get show_only_folders property value."""
+        return self._show_only_folders
+
+    @show_only_folders.setter
+    def show_only_folders(self, show_only_folders):
+        """Set show_only_folders property value."""
+        self._show_only_folders = show_only_folders
+
+        # Update widget layout
+        self._filename.disabled = self._show_only_folders
+        self._filename.layout.display = (None, "none")[self._show_only_folders]
+        self._gb.layout.grid_template_areas = '''
+            'pathlist {}'
+            'dircontent dircontent'
+            '''.format(('filename', 'pathlist')[self._show_only_folders])
+
+        # Reset the dialog
+        self.reset()
+
+    @property
     def selected(self):
         """Get selected value."""
         try:
@@ -485,21 +520,6 @@ class FileChooser(VBox):
     def selected_filename(self):
         """Get the selected_filename."""
         return self._selected_filename
-
-    @property
-    def show_only_folders(self):
-        """Get show_only_folders property value."""
-        return self._show_only_folders
-
-    @show_only_folders.setter
-    def show_only_folders(self, flag):
-        """Set show_only_folders property value."""
-        self._show_only_folders = flag
-        self._filename.disabled = self._show_only_folders
-        self._set_form_values(
-            self._selected_path,
-            self._selected_filename
-        )
 
     def __repr__(self):
         """Build string representation."""

@@ -35,7 +35,7 @@ def get_dir_contents(
         path,
         show_hidden=False,
         prepend_icons=False,
-        show_only_folders=False):
+        show_only_dirs=False):
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -48,7 +48,7 @@ def get_dir_contents(
             full_item = os.path.join(path, item)
             if append and os.path.isdir(full_item):
                 dirs.append(item)
-            elif append and not show_only_folders:
+            elif append and not show_only_dirs:
                 files.append(item)
         if has_parent(path):
             dirs.insert(0, '..')

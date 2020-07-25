@@ -492,6 +492,14 @@ class FileChooser(VBox):
         # Update widget layout
         self._filename.disabled = self._show_only_dirs
         self._filename.layout.display = (None, "none")[self._show_only_dirs]
+        self._gb.layout.children = [
+            self._pathlist,
+            self._dircontent
+        ]
+
+        if not self._show_only_dirs:
+            self._gb.layout.children.insert(1, self._filename)
+
         self._gb.layout.grid_template_areas = '''
             'pathlist {}'
             'dircontent dircontent'

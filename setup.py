@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='ipyfilechooser',
-    version='0.3.4',
+    version='0.3.5',
     author='Thomas Bouve (@crahan)',
     author_email='crahan@n00.be',
     description=(

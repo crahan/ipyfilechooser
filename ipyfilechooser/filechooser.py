@@ -21,6 +21,7 @@ class FileChooser(VBox):
             select_default=False,
             use_dir_icons=False,
             show_only_dirs=False,
+            filter_pattern='',
             **kwargs
     ):
         """Initialize FileChooser object."""
@@ -34,6 +35,7 @@ class FileChooser(VBox):
         self._callback = None
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
+        self._filter_pattern = filter_pattern
 
         # Widgets
         self._pathlist = Dropdown(
@@ -187,7 +189,8 @@ class FileChooser(VBox):
             path,
             show_hidden=self._show_hidden,
             prepend_icons=False,
-            show_only_dirs=self._show_only_dirs
+            show_only_dirs=self._show_only_dirs,
+            filter_pattern=self._filter_pattern
         )
 
         # file/folder display names
@@ -195,7 +198,8 @@ class FileChooser(VBox):
             path,
             show_hidden=self._show_hidden,
             prepend_icons=self._use_dir_icons,
-            show_only_dirs=self._show_only_dirs
+            show_only_dirs=self._show_only_dirs,
+            filter_pattern=self._filter_pattern
         )
 
         # Dict to map real names to display names
@@ -528,6 +532,17 @@ class FileChooser(VBox):
     def selected_filename(self):
         """Get the selected_filename."""
         return self._selected_filename
+
+    @property
+    def filter_pattern(self):
+        """Get file name filter pattern."""
+        return self._filter_pattern
+
+    @filter_pattern.setter
+    def filter_pattern(self, value):
+        """Set file name filter pattern."""
+        self._filter_pattern = value
+        self.refresh()
 
     def __repr__(self):
         """Build string representation."""

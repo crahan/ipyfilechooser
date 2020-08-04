@@ -31,7 +31,11 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
-def get_dir_contents(path, hidden=False, prepend_icons=False):
+def get_dir_contents(
+        path,
+        show_hidden=False,
+        prepend_icons=False,
+        show_only_dirs=False):
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -39,12 +43,12 @@ def get_dir_contents(path, hidden=False, prepend_icons=False):
     if os.path.isdir(path):
         for item in os.listdir(path):
             append = True
-            if item.startswith('.') and not hidden:
+            if item.startswith('.') and not show_hidden:
                 append = False
             full_item = os.path.join(path, item)
-            if os.path.isdir(full_item) and append:
+            if append and os.path.isdir(full_item):
                 dirs.append(item)
-            elif append:
+            elif append and not show_only_dirs:
                 files.append(item)
         if has_parent(path):
             dirs.insert(0, '..')

@@ -20,6 +20,7 @@ class FileChooser(VBox):
             show_hidden=False,
             select_default=False,
             use_dir_icons=False,
+            show_only_dirs=False,
             **kwargs
     ):
         """Initialize FileChooser object."""
@@ -32,6 +33,7 @@ class FileChooser(VBox):
         self._change_desc = change_desc
         self._callback = None
         self._use_dir_icons = use_dir_icons
+        self._show_only_dirs = show_only_dirs
 
         # Widgets
         self._pathlist = Dropdown(
@@ -45,8 +47,10 @@ class FileChooser(VBox):
             placeholder='output filename',
             layout=Layout(
                 width='auto',
-                grid_area='filename'
-            )
+                grid_area='filename',
+                display=(None, "none")[self._show_only_dirs]
+            ),
+            disabled=self._show_only_dirs
         )
         self._dircontent = Select(
             rows=8,
@@ -114,11 +118,14 @@ class FileChooser(VBox):
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
                 grid_template_areas='''
-                    'pathlist filename'
+                    'pathlist {}'
                     'dircontent dircontent'
-                    '''
+                    '''.format(
+                        ('filename', 'pathlist')[self._show_only_dirs]
+                )
             )
         )
+
         buttonbar = HBox(
             children=[
                 self._select,
@@ -166,6 +173,10 @@ class FileChooser(VBox):
             names='value'
         )
 
+        # In folder only mode zero out the filename
+        if self._show_only_dirs:
+            filename = ''
+
         # Set form values
         self._pathlist.options = get_subpaths(path)
         self._pathlist.value = path
@@ -174,15 +185,17 @@ class FileChooser(VBox):
         # file/folder real names
         dircontent_real_names = get_dir_contents(
             path,
-            hidden=self._show_hidden,
-            prepend_icons=False
+            show_hidden=self._show_hidden,
+            prepend_icons=False,
+            show_only_dirs=self._show_only_dirs
         )
 
         # file/folder display names
         dircontent_display_names = get_dir_contents(
             path,
-            hidden=self._show_hidden,
-            prepend_icons=self._use_dir_icons
+            show_hidden=self._show_hidden,
+            prepend_icons=self._use_dir_icons,
+            show_only_dirs=self._show_only_dirs
         )
 
         # Dict to map real names to display names
@@ -349,9 +362,11 @@ class FileChooser(VBox):
 
     def reset(self, path=None, filename=None):
         """Reset the form to the default path and filename."""
-        self._selected_path = ''
-        self._selected_filename = ''
+        self._selected_path = None
+        self._selected_filename = None
 
+        # Reset select button and label
+        self._select.description = self._select_desc
         self._label.value = self._LBL_TEMPLATE.format(
             self._LBL_NOFILE,
             'black'
@@ -363,9 +378,15 @@ class FileChooser(VBox):
         if filename is not None:
             self._default_filename = filename
 
+        # Set a proper filename value
+        if self._show_only_dirs:
+            filename = ''
+        else:
+            filename = self._default_filename
+
         self._set_form_values(
             self._default_path,
-            self._default_filename
+            filename
         )
 
     def refresh(self):
@@ -459,6 +480,35 @@ class FileChooser(VBox):
         )
 
     @property
+    def show_only_dirs(self):
+        """Get show_only_dirs property value."""
+        return self._show_only_dirs
+
+    @show_only_dirs.setter
+    def show_only_dirs(self, show_only_dirs):
+        """Set show_only_dirs property value."""
+        self._show_only_dirs = show_only_dirs
+
+        # Update widget layout
+        self._filename.disabled = self._show_only_dirs
+        self._filename.layout.display = (None, "none")[self._show_only_dirs]
+        self._gb.layout.children = [
+            self._pathlist,
+            self._dircontent
+        ]
+
+        if not self._show_only_dirs:
+            self._gb.layout.children.insert(1, self._filename)
+
+        self._gb.layout.grid_template_areas = '''
+            'pathlist {}'
+            'dircontent dircontent'
+            '''.format(('filename', 'pathlist')[self._show_only_dirs])
+
+        # Reset the dialog
+        self.reset()
+
+    @property
     def selected(self):
         """Get selected value."""
         try:
@@ -484,10 +534,20 @@ class FileChooser(VBox):
         str_ = ("FileChooser("
                 "path='{0}', "
                 "filename='{1}', "
-                "show_hidden='{2}')").format(
+                "title='{2}', "
+                "show_hidden='{3}', "
+                "use_dir_icons='{4}', "
+                "show_only_dirs='{5}', "
+                "select_desc='{6}', "
+                "change_desc='{7}')").format(
             self._default_path,
             self._default_filename,
-            self._show_hidden
+            self._title,
+            self._show_hidden,
+            self._use_dir_icons,
+            self._show_only_dirs,
+            self._select_desc,
+            self._change_desc
         )
         return str_
 

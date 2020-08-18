@@ -36,6 +36,9 @@ fc.show_hidden = True
 # Show or hide folder icons
 fc.use_dir_icons = True
 
+# Switch to folder-only mode
+fc.show_only_dirs = True
+
 # Change the title (use '' to hide)
 fc.title = '<b>FileChooser title</b>'
 
@@ -55,6 +58,7 @@ fc.refresh()
 fc.register_callback(function_name)
 fc.show_hidden
 fc.use_dir_icons
+fc.show_only_dirs
 fc.rows
 fc.title
 fc.default
@@ -89,6 +93,10 @@ fc.selected_filename
 
 
 ## Release notes
+
+### 0.3.5
+
+- Option added to only display folders (@andriykorchak)
 
 ### 0.3.4
 

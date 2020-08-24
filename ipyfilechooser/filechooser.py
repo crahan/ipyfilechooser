@@ -21,8 +21,7 @@ class FileChooser(VBox):
             select_default=False,
             use_dir_icons=False,
             show_only_dirs=False,
-            **kwargs
-    ):
+            **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename
@@ -120,9 +119,7 @@ class FileChooser(VBox):
                 grid_template_areas='''
                     'pathlist {}'
                     'dircontent dircontent'
-                    '''.format(
-                        ('filename', 'pathlist')[self._show_only_dirs]
-                )
+                    '''.format(('filename', 'pathlist')[self._show_only_dirs])
             )
         )
 
@@ -296,7 +293,7 @@ class FileChooser(VBox):
             change['new']
         )
 
-    def _on_select_click(self, b):
+    def _on_select_click(self, _b):
         """Handle select button clicks."""
         if self._gb.layout.display == 'none':
             # If not shown, open the dialog
@@ -354,7 +351,7 @@ class FileChooser(VBox):
                 'green'
             )
 
-    def _on_cancel_click(self, b):
+    def _on_cancel_click(self, _b):
         """Handle cancel button clicks."""
         self._gb.layout.display = 'none'
         self._cancel.layout.display = 'none'
@@ -531,15 +528,17 @@ class FileChooser(VBox):
 
     def __repr__(self):
         """Build string representation."""
-        str_ = ("FileChooser("
-                "path='{0}', "
-                "filename='{1}', "
-                "title='{2}', "
-                "show_hidden='{3}', "
-                "use_dir_icons='{4}', "
-                "show_only_dirs='{5}', "
-                "select_desc='{6}', "
-                "change_desc='{7}')").format(
+        str_ = (
+            "FileChooser("
+            "path='{0}', "
+            "filename='{1}', "
+            "title='{2}', "
+            "show_hidden='{3}', "
+            "use_dir_icons='{4}', "
+            "show_only_dirs='{5}', "
+            "select_desc='{6}', "
+            "change_desc='{7}')"
+        ).format(
             self._default_path,
             self._default_filename,
             self._title,

@@ -1,10 +1,10 @@
 import os
 from ipywidgets import Dropdown, Text, Select, Button, HTML
-from ipywidgets import Layout, GridBox, HBox, VBox
+from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents
 
 
-class FileChooser(VBox):
+class FileChooser(VBox, ValueWidget):
     """FileChooser class."""
 
     _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
@@ -21,6 +21,7 @@ class FileChooser(VBox):
             select_default=False,
             use_dir_icons=False,
             show_only_dirs=False,
+            filter_pattern=None,
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
@@ -33,6 +34,7 @@ class FileChooser(VBox):
         self._callback = None
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
+        self._filter_pattern = filter_pattern
 
         # Widgets
         self._pathlist = Dropdown(
@@ -184,7 +186,8 @@ class FileChooser(VBox):
             path,
             show_hidden=self._show_hidden,
             prepend_icons=False,
-            show_only_dirs=self._show_only_dirs
+            show_only_dirs=self._show_only_dirs,
+            filter_pattern=self._filter_pattern
         )
 
         # file/folder display names
@@ -192,7 +195,8 @@ class FileChooser(VBox):
             path,
             show_hidden=self._show_hidden,
             prepend_icons=self._use_dir_icons,
-            show_only_dirs=self._show_only_dirs
+            show_only_dirs=self._show_only_dirs,
+            filter_pattern=self._filter_pattern
         )
 
         # Dict to map real names to display names
@@ -506,6 +510,17 @@ class FileChooser(VBox):
         self.reset()
 
     @property
+    def filter_pattern(self):
+        """Get file name filter pattern."""
+        return self._filter_pattern
+
+    @filter_pattern.setter
+    def filter_pattern(self, filter_pattern):
+        """Set file name filter pattern."""
+        self._filter_pattern = filter_pattern
+        self.refresh()
+
+    @property
     def selected(self):
         """Get selected value."""
         try:
@@ -553,3 +568,7 @@ class FileChooser(VBox):
     def register_callback(self, callback):
         """Register a callback function."""
         self._callback = callback
+
+    def get_interact_value(self):
+        """Return the value which should be passed to interactive functions."""
+        return self.selected

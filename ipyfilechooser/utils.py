@@ -1,4 +1,5 @@
 """Helper functions for ipyfilechooser."""
+import fnmatch
 import os
 import string
 import sys
@@ -35,7 +36,8 @@ def get_dir_contents(
         path,
         show_hidden=False,
         prepend_icons=False,
-        show_only_dirs=False):
+        show_only_dirs=False,
+        filter_pattern=''):
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -49,7 +51,11 @@ def get_dir_contents(
             if append and os.path.isdir(full_item):
                 dirs.append(item)
             elif append and not show_only_dirs:
-                files.append(item)
+                if filter_pattern:
+                    if fnmatch.fnmatch(item, filter_pattern):
+                        files.append(item)
+                else:
+                    files.append(item)
         if has_parent(path):
             dirs.insert(0, '..')
     if prepend_icons:

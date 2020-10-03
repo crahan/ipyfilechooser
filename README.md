@@ -50,7 +50,7 @@ def change_title(chooser):
 fc.register_callback(change_title)
 ```
 
-## Functions and variables
+## Functions and properties
 
 ```
 fc.reset()
@@ -61,6 +61,7 @@ fc.use_dir_icons
 fc.show_only_dirs
 fc.rows
 fc.title
+fc.filter_pattern
 fc.default
 fc.default_path
 fc.default_filename

@@ -94,6 +94,13 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.4.0
+
+- Option added to specify a file filter (@andriykorchak)
+- Add support for `ValueWidget` and `get_interact_value()`
+- Updated sample notebook with filter example
+- Updated Development Status to Production/Stable
+
 ### 0.3.5
 
 - Option added to only display folders (@andriykorchak)

@@ -37,7 +37,7 @@ def get_dir_contents(
         show_hidden=False,
         prepend_icons=False,
         show_only_dirs=False,
-        filter_pattern=''):
+        filter_pattern=None):
     """Get directory contents."""
     files = list()
     dirs = list()

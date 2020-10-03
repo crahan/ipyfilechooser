@@ -1,10 +1,10 @@
 import os
 from ipywidgets import Dropdown, Text, Select, Button, HTML
-from ipywidgets import Layout, GridBox, HBox, VBox
+from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents
 
 
-class FileChooser(VBox):
+class FileChooser(VBox, ValueWidget):
     """FileChooser class."""
 
     _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
@@ -21,9 +21,8 @@ class FileChooser(VBox):
             select_default=False,
             use_dir_icons=False,
             show_only_dirs=False,
-            filter_pattern='',
-            **kwargs
-        ):
+            filter_pattern=None,
+            **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename
@@ -511,6 +510,17 @@ class FileChooser(VBox):
         self.reset()
 
     @property
+    def filter_pattern(self):
+        """Get file name filter pattern."""
+        return self._filter_pattern
+
+    @filter_pattern.setter
+    def filter_pattern(self, filter_pattern):
+        """Set file name filter pattern."""
+        self._filter_pattern = filter_pattern
+        self.refresh()
+
+    @property
     def selected(self):
         """Get selected value."""
         try:
@@ -530,17 +540,6 @@ class FileChooser(VBox):
     def selected_filename(self):
         """Get the selected_filename."""
         return self._selected_filename
-
-    @property
-    def filter_pattern(self):
-        """Get file name filter pattern."""
-        return self._filter_pattern
-
-    @filter_pattern.setter
-    def filter_pattern(self, value):
-        """Set file name filter pattern."""
-        self._filter_pattern = value
-        self.refresh()
 
     def __repr__(self):
         """Build string representation."""
@@ -569,3 +568,7 @@ class FileChooser(VBox):
     def register_callback(self, callback):
         """Register a callback function."""
         self._callback = callback
+
+    def get_interact_value(self):
+        """Return the value which should be passed to interactive functions."""
+        return self.selected

@@ -21,7 +21,8 @@ class FileChooser(VBox):
             select_default=False,
             use_dir_icons=False,
             show_only_dirs=False,
-            **kwargs):
+            **kwargs
+        ):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
         self._default_filename = filename

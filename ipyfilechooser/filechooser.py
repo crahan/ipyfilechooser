@@ -32,6 +32,7 @@ class FileChooser(VBox, ValueWidget):
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._callback = None
+        self._select_default = select_default
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
@@ -141,7 +142,7 @@ class FileChooser(VBox, ValueWidget):
         )
 
         # Use the defaults as the selected values
-        if select_default:
+        if self._select_default:
             self._apply_selection()
 
         # Call VBox super class __init__
@@ -389,6 +390,10 @@ class FileChooser(VBox, ValueWidget):
             self._default_path,
             filename
         )
+
+        # Use the defaults as the selected values
+        if self._select_default:
+            self._apply_selection()
 
     def refresh(self):
         """Re-render the form."""

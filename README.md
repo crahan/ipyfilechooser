@@ -95,6 +95,10 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.4.1
+
+- Fixed issue with `select_default` not being applied on `reset`
+
 ### 0.4.0
 
 - Option added to specify a file filter (@andriykorchak)

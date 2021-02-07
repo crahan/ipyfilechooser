@@ -32,6 +32,19 @@ def has_parent(path):
     return os.path.basename(path) != ''
 
 
+def match_item(item, filter_pattern):
+    """Check if a string matches one or more fnmatch patterns."""
+    idx = 0
+    found = False
+    patterns = filter_pattern if isinstance(filter_pattern, list) else [filter_pattern]
+
+    while idx < len(patterns) and not found:
+        found |= fnmatch.fnmatch(item, patterns[idx])
+        idx += 1
+
+    return found
+
+
 def get_dir_contents(
         path,
         show_hidden=False,
@@ -52,7 +65,7 @@ def get_dir_contents(
                 dirs.append(item)
             elif append and not show_only_dirs:
                 if filter_pattern:
-                    if fnmatch.fnmatch(item, filter_pattern):
+                    if match_item(item, filter_pattern):
                         files.append(item)
                 else:
                     files.append(item)

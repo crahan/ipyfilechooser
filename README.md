@@ -95,6 +95,10 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.4.2
+
+- Added ability to specify a list of `fnmatch` pattern strings for `filter_pattern`
+
 ### 0.4.1
 
 - Fixed issue with `select_default` not being applied on `reset`

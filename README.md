@@ -39,6 +39,12 @@ fc.use_dir_icons = True
 # Switch to folder-only mode
 fc.show_only_dirs = True
 
+# Set a file filter pattern (uses https://docs.python.org/3/library/fnmatch.html)
+fc.filter_pattern = '*.txt'
+
+# Set multiple file filter patterns (uses https://docs.python.org/3/library/fnmatch.html)
+fc.filter_pattern = ['*.jpg', '*.png']
+
 # Change the title (use '' to hide)
 fc.title = '<b>FileChooser title</b>'
 

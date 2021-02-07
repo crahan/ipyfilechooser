@@ -34,12 +34,14 @@ def has_parent(path):
 
 def match_item(item, filter_pattern):
     """Check if a string matches one or more fnmatch patterns."""
+    if isinstance(filter_pattern, str):
+        filter_pattern = [filter_pattern]
+
     idx = 0
     found = False
-    patterns = filter_pattern if isinstance(filter_pattern, list) else [filter_pattern]
 
-    while idx < len(patterns) and not found:
-        found |= fnmatch.fnmatch(item, patterns[idx])
+    while idx < len(filter_pattern) and not found:
+        found |= fnmatch.fnmatch(item, filter_pattern[idx])
         idx += 1
 
     return found

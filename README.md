@@ -101,6 +101,10 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.4.3
+
+- Prevent applying the selected value if the filename doesn't match one of the `filter_pattern` values
+
 ### 0.4.2
 
 - Added ability to specify a list of `fnmatch` pattern strings for `filter_pattern`

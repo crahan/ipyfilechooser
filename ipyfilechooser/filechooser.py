@@ -1,7 +1,7 @@
 import os
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
-from .utils import get_subpaths, get_dir_contents
+from .utils import get_subpaths, get_dir_contents, match_item
 
 
 class FileChooser(VBox, ValueWidget):
@@ -244,9 +244,11 @@ class FileChooser(VBox, ValueWidget):
             # Disable the select button if path and filename
             # - equal an existing folder in the current view
             # - equal the already selected values
+            # - don't match the provided filter pattern(s)
             check1 = filename in dircontent_real_names
             check2 = os.path.isdir(os.path.join(path, filename))
             check3 = False
+            check4 = False
 
             # Only check selected if selected is set
             if ((self._selected_path is not None) and
@@ -257,7 +259,11 @@ class FileChooser(VBox, ValueWidget):
                 )
                 check3 = os.path.join(path, filename) == selected
 
-            if (check1 and check2) or check3:
+            # Ensure only allowed extensions are used
+            if self._filter_pattern:
+                check4 = not match_item(filename, self._filter_pattern)
+
+            if (check1 and check2) or check3 or check4:
                 self._select.disabled = True
             else:
                 self._select.disabled = False

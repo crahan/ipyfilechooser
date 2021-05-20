@@ -210,9 +210,11 @@ class FileChooser(VBox, ValueWidget):
         }
 
         # Dict to map display names to real names
-        self._map_disp_to_name = dict(
-            reversed(item) for item in self._map_name_to_disp.items()
-        )
+        self._map_disp_to_name = {
+            disp_name: real_name
+            for real_name, disp_name in
+            self._map_name_to_disp.items()
+        }
 
         # Set _dircontent form value to display names
         self._dircontent.options = dircontent_display_names

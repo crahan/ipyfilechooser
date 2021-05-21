@@ -290,7 +290,7 @@ class FileChooser(VBox, ValueWidget):
         if os.path.isdir(new_path):
             path = new_path
             filename = self._filename.value
-        elif os.path.isfile(new_path):
+        else:
             path = self._pathlist.value
             filename = self._map_disp_to_name[change['new']]
 

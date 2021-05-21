@@ -1,4 +1,6 @@
 import os
+import ipyfilechooser
+from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents, match_item
@@ -12,16 +14,16 @@ class FileChooser(VBox, ValueWidget):
 
     def __init__(
             self,
-            path=os.getcwd(),
-            filename='',
-            title='',
-            select_desc='Select',
-            change_desc='Change',
-            show_hidden=False,
-            select_default=False,
-            use_dir_icons=False,
-            show_only_dirs=False,
-            filter_pattern=None,
+            path: str = os.getcwd(),
+            filename: str = '',
+            title: str = '',
+            select_desc: str = 'Select',
+            change_desc: str = 'Change',
+            show_hidden: bool = False,
+            select_default: bool = False,
+            use_dir_icons: bool = False,
+            show_only_dirs: bool = False,
+            filter_pattern: Optional[Sequence[str]] = None,
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
@@ -156,7 +158,7 @@ class FileChooser(VBox, ValueWidget):
             **kwargs
         )
 
-    def _set_form_values(self, path, filename):
+    def _set_form_values(self, path: str, filename: str) -> None:
         """Set the form values."""
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.
@@ -270,14 +272,14 @@ class FileChooser(VBox, ValueWidget):
             else:
                 self._select.disabled = False
 
-    def _on_pathlist_select(self, change):
+    def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a path entry."""
         self._set_form_values(
             change['new'],
             self._filename.value
         )
 
-    def _on_dircontent_select(self, change):
+    def _on_dircontent_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a folder entry."""
         new_path = os.path.realpath(
             os.path.join(
@@ -299,14 +301,14 @@ class FileChooser(VBox, ValueWidget):
             filename
         )
 
-    def _on_filename_change(self, change):
+    def _on_filename_change(self, change: Mapping[str, str]) -> None:
         """Handle filename field changes."""
         self._set_form_values(
             self._pathlist.value,
             change['new']
         )
 
-    def _on_select_click(self, _b):
+    def _on_select_click(self, _b) -> None:
         """Handle select button clicks."""
         if self._gb.layout.display == 'none':
             # If not shown, open the dialog
@@ -323,7 +325,7 @@ class FileChooser(VBox, ValueWidget):
                     # Support previous behaviour of not passing self
                     self._callback()
 
-    def _show_dialog(self):
+    def _show_dialog(self) -> None:
         """Show the dialog."""
         # Show dialog and cancel button
         self._gb.layout.display = None
@@ -340,7 +342,7 @@ class FileChooser(VBox, ValueWidget):
 
         self._set_form_values(path, filename)
 
-    def _apply_selection(self):
+    def _apply_selection(self) -> None:
         """Close the dialog and apply the selection."""
         self._gb.layout.display = 'none'
         self._cancel.layout.display = 'none'
@@ -364,13 +366,13 @@ class FileChooser(VBox, ValueWidget):
                 'green'
             )
 
-    def _on_cancel_click(self, _b):
+    def _on_cancel_click(self, _b) -> None:
         """Handle cancel button clicks."""
         self._gb.layout.display = 'none'
         self._cancel.layout.display = 'none'
         self._select.disabled = False
 
-    def reset(self, path=None, filename=None):
+    def reset(self, path: Optional[str] = None, filename: Optional[str] = None) -> None:
         """Reset the form to the default path and filename."""
         self._selected_path = None
         self._selected_filename = None
@@ -403,7 +405,7 @@ class FileChooser(VBox, ValueWidget):
         if self._select_default:
             self._apply_selection()
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Re-render the form."""
         self._set_form_values(
             self._pathlist.value,
@@ -411,44 +413,44 @@ class FileChooser(VBox, ValueWidget):
         )
 
     @property
-    def show_hidden(self):
+    def show_hidden(self) -> bool:
         """Get _show_hidden value."""
         return self._show_hidden
 
     @show_hidden.setter
-    def show_hidden(self, hidden):
+    def show_hidden(self, hidden: bool) -> None:
         """Set _show_hidden value."""
         self._show_hidden = hidden
         self.refresh()
 
     @property
-    def use_dir_icons(self):
+    def use_dir_icons(self) -> bool:
         """Get _use_dir_icons value."""
         return self._use_dir_icons
 
     @use_dir_icons.setter
-    def use_dir_icons(self, dir_icons):
+    def use_dir_icons(self, dir_icons: bool) -> None:
         """Set _use_dir_icons value."""
         self._use_dir_icons = dir_icons
         self.refresh()
 
     @property
-    def rows(self):
+    def rows(self) -> int:
         """Get current number of rows."""
         return self._dircontent.rows
 
     @rows.setter
-    def rows(self, rows):
+    def rows(self, rows: int) -> None:
         """Set number of rows."""
         self._dircontent.rows = rows
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Get the title."""
         return self._title.value
 
     @title.setter
-    def title(self, title):
+    def title(self, title: str) -> None:
         """Set the title."""
         self._title.value = title
 
@@ -458,7 +460,7 @@ class FileChooser(VBox, ValueWidget):
             self._title.layout.display = None
 
     @property
-    def default(self):
+    def default(self) -> str:
         """Get the default value."""
         return os.path.join(
             self._default_path,
@@ -466,12 +468,12 @@ class FileChooser(VBox, ValueWidget):
         )
 
     @property
-    def default_path(self):
+    def default_path(self) -> str:
         """Get the default_path value."""
         return self._default_path
 
     @default_path.setter
-    def default_path(self, path):
+    def default_path(self, path: str) -> None:
         """Set the default_path."""
         self._default_path = path.rstrip(os.path.sep)
         self._set_form_values(
@@ -480,12 +482,12 @@ class FileChooser(VBox, ValueWidget):
         )
 
     @property
-    def default_filename(self):
+    def default_filename(self) -> str:
         """Get the default_filename value."""
         return self._default_filename
 
     @default_filename.setter
-    def default_filename(self, filename):
+    def default_filename(self, filename: str) -> None:
         """Set the default_filename."""
         self._default_filename = filename
         self._set_form_values(
@@ -494,12 +496,12 @@ class FileChooser(VBox, ValueWidget):
         )
 
     @property
-    def show_only_dirs(self):
+    def show_only_dirs(self) -> bool:
         """Get show_only_dirs property value."""
         return self._show_only_dirs
 
     @show_only_dirs.setter
-    def show_only_dirs(self, show_only_dirs):
+    def show_only_dirs(self, show_only_dirs: bool) -> None:
         """Set show_only_dirs property value."""
         self._show_only_dirs = show_only_dirs
 
@@ -523,18 +525,18 @@ class FileChooser(VBox, ValueWidget):
         self.reset()
 
     @property
-    def filter_pattern(self):
+    def filter_pattern(self) -> Optional[Sequence[str]]:
         """Get file name filter pattern."""
         return self._filter_pattern
 
     @filter_pattern.setter
-    def filter_pattern(self, filter_pattern):
+    def filter_pattern(self, filter_pattern: Optional[Sequence[str]]) -> None:
         """Set file name filter pattern."""
         self._filter_pattern = filter_pattern
         self.refresh()
 
     @property
-    def selected(self):
+    def selected(self) -> Optional[str]:
         """Get selected value."""
         try:
             return os.path.join(
@@ -545,16 +547,16 @@ class FileChooser(VBox, ValueWidget):
             return None
 
     @property
-    def selected_path(self):
+    def selected_path(self) -> str:
         """Get selected_path value."""
         return self._selected_path
 
     @property
-    def selected_filename(self):
+    def selected_filename(self) -> str:
         """Get the selected_filename."""
         return self._selected_filename
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Build string representation."""
         str_ = (
             "FileChooser("
@@ -578,10 +580,10 @@ class FileChooser(VBox, ValueWidget):
         )
         return str_
 
-    def register_callback(self, callback):
+    def register_callback(self, callback: Callable[[Optional[ipyfilechooser.FileChooser]], None]) -> None:
         """Register a callback function."""
         self._callback = callback
 
-    def get_interact_value(self):
+    def get_interact_value(self) -> str:
         """Return the value which should be passed to interactive functions."""
         return self.selected

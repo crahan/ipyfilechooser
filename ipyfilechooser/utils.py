@@ -3,9 +3,10 @@ import fnmatch
 import os
 import string
 import sys
+from typing import List, AnyStr, Sequence, Iterable, Optional
 
 
-def get_subpaths(path):
+def get_subpaths(path: AnyStr) -> List[AnyStr]:
     """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
@@ -27,12 +28,12 @@ def get_subpaths(path):
     return paths
 
 
-def has_parent(path):
+def has_parent(path: AnyStr) -> bool:
     """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
 
 
-def match_item(item, filter_pattern):
+def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
     """Check if a string matches one or more fnmatch patterns."""
     if isinstance(filter_pattern, str):
         filter_pattern = [filter_pattern]
@@ -48,11 +49,11 @@ def match_item(item, filter_pattern):
 
 
 def get_dir_contents(
-        path,
-        show_hidden=False,
-        prepend_icons=False,
-        show_only_dirs=False,
-        filter_pattern=None):
+        path: AnyStr,
+        show_hidden: bool = False,
+        prepend_icons: bool = False,
+        show_only_dirs: bool = False,
+        filter_pattern: Optional[Sequence[str]] = None) -> List[str]:
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -79,12 +80,12 @@ def get_dir_contents(
         return sorted(dirs) + sorted(files)
 
 
-def prepend_dir_icons(dir_list):
+def prepend_dir_icons(dir_list: Iterable[str]) -> List[str]:
     """Prepend unicode folder icon to directory names."""
     return ['\U0001F4C1 ' + dirname for dirname in dir_list]
 
 
-def get_drive_letters():
+def get_drive_letters() -> List[str]:
     """Get drive letters."""
     if sys.platform == 'win32':
         # Windows has drive letters

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import os
+from typing import AnyStr
 from setuptools import setup, find_packages
 
 
-def read(fname):
+def read(fname: str) -> AnyStr:
     """Open files relative to package."""
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 

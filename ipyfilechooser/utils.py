@@ -3,10 +3,10 @@ import fnmatch
 import os
 import string
 import sys
-from typing import List, AnyStr, Sequence, Iterable, Optional
+from typing import List, Sequence, Iterable, Optional
 
 
-def get_subpaths(path: AnyStr) -> List[AnyStr]:
+def get_subpaths(path: str) -> List[str]:
     """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
@@ -28,7 +28,7 @@ def get_subpaths(path: AnyStr) -> List[AnyStr]:
     return paths
 
 
-def has_parent(path: AnyStr) -> bool:
+def has_parent(path: str) -> bool:
     """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
 
@@ -49,7 +49,7 @@ def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
 
 
 def get_dir_contents(
-        path: AnyStr,
+        path: str,
         show_hidden: bool = False,
         prepend_icons: bool = False,
         show_only_dirs: bool = False,

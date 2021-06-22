@@ -101,6 +101,13 @@ fc.selected_filename
 
 ## Release notes
 
+### 0.4.4
+
+- Added typing hints (@Mandroide)
+- Updated max line length check from 90 to 120 characters
+- Fixed `filter_pattern` values not being treated as case-insensitive
+- General code cleanup
+
 ### 0.4.3
 
 - Prevent applying the selected value if the filename doesn't match one of the `filter_pattern` values

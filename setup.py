@@ -4,7 +4,7 @@ from typing import AnyStr
 from setuptools import setup, find_packages
 
 
-def read(fname: str) -> AnyStr:
+def read(fname: str) -> str:
     """Open files relative to package."""
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 

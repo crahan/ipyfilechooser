@@ -42,7 +42,7 @@ def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
     found = False
 
     while idx < len(filter_pattern) and not found:
-        found |= fnmatch.fnmatch(item, filter_pattern[idx])
+        found |= fnmatch.fnmatch(item.lower(), filter_pattern[idx].lower())
         idx += 1
 
     return found

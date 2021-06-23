@@ -10,7 +10,7 @@ To emphasize the risk of overwriting existing files, the selected filepath is di
 
 ## Usage
 
-```
+```python
 from ipyfilechooser import FileChooser
 
 # Create and display a FileChooser widget
@@ -58,7 +58,7 @@ fc.register_callback(change_title)
 
 ## Functions and properties
 
-```
+```python
 fc.reset()
 fc.refresh()
 fc.register_callback(function_name)

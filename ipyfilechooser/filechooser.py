@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
-from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
+from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents, match_item
 
 
@@ -124,7 +124,7 @@ class FileChooser(VBox, ValueWidget):
             children=[
                 self._select,
                 self._cancel,
-                self._label
+                Box([self._label], layout=Layout(overflow='auto'))
             ],
             layout=Layout(width='auto')
         )

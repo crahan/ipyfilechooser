@@ -23,6 +23,7 @@ class FileChooser(VBox, ValueWidget):
             use_dir_icons: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
+            layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
@@ -103,7 +104,7 @@ class FileChooser(VBox, ValueWidget):
             ],
             layout=Layout(
                 display='none',
-                width='500px',
+                width='auto',
                 grid_gap='0px 0px',
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
@@ -137,7 +138,7 @@ class FileChooser(VBox, ValueWidget):
                 self._gb,
                 buttonbar
             ],
-            layout=Layout(width='auto'),
+            layout=layout,
             **kwargs
         )
 

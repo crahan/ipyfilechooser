@@ -8,7 +8,7 @@ from .utils import get_subpaths, get_dir_contents, match_item
 class FileChooser(VBox, ValueWidget):
     """FileChooser class."""
 
-    _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
+    _LBL_TEMPLATE = '<span style="color:{1};">{0}</span>'
     _LBL_NOFILE = 'No file selected'
 
     def __init__(
@@ -23,7 +23,7 @@ class FileChooser(VBox, ValueWidget):
             use_dir_icons: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
-            width: str = '500px',
+            layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = path.rstrip(os.path.sep)
@@ -66,13 +66,17 @@ class FileChooser(VBox, ValueWidget):
         self._cancel = Button(
             description='Cancel',
             layout=Layout(
-                width='auto',
+                min_width='6em',
+                width='6em',
                 display='none'
             )
         )
         self._select = Button(
             description=self._select_desc,
-            layout=Layout(width='auto')
+            layout=Layout(
+                min_width='6em',
+                width='6em'
+            )
         )
         self._title = HTML(
             value=title
@@ -92,7 +96,8 @@ class FileChooser(VBox, ValueWidget):
         self._label = HTML(
             value=self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black'),
             placeholder='',
-            description=''
+            description='',
+            layout=Layout(margin='0 0 0 1em')
         )
 
         # Layout
@@ -104,7 +109,7 @@ class FileChooser(VBox, ValueWidget):
             ],
             layout=Layout(
                 display='none',
-                width=width,
+                width='auto',
                 grid_gap='0px 0px',
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
@@ -138,7 +143,7 @@ class FileChooser(VBox, ValueWidget):
                 self._gb,
                 buttonbar
             ],
-            layout=Layout(width='auto'),
+            layout=layout,
             **kwargs
         )
 

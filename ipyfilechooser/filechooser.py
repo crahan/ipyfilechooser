@@ -455,6 +455,11 @@ class FileChooser(VBox, ValueWidget):
         self.refresh()
 
     @property
+    def value(self) -> Optional[str]:
+        """Get selected value."""
+        return self.selected
+
+    @property
     def selected(self) -> Optional[str]:
         """Get selected value."""
         selected = None

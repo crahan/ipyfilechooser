@@ -26,7 +26,7 @@ class FileChooser(VBox, ValueWidget):
             layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
-        self._default_path = path.rstrip(os.path.sep)
+        self._default_path = os.path.normpath(path)
         self._default_filename = filename
         self._selected_path = None
         self._selected_filename = None
@@ -324,7 +324,7 @@ class FileChooser(VBox, ValueWidget):
         self._label.value = self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black')
 
         if path is not None:
-            self._default_path = path.rstrip(os.path.sep)
+            self._default_path = os.path.normpath(path)
 
         if filename is not None:
             self._default_filename = filename
@@ -405,7 +405,7 @@ class FileChooser(VBox, ValueWidget):
     @default_path.setter
     def default_path(self, path: str) -> None:
         """Set the default_path."""
-        self._default_path = path.rstrip(os.path.sep)
+        self._default_path = os.path.normpath(path)
         self._set_form_values(self._default_path, self._filename.value)
 
     @property

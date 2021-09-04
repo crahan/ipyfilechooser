@@ -71,6 +71,7 @@ fc.filter_pattern
 fc.default
 fc.default_path
 fc.default_filename
+fc.value
 fc.selected
 fc.selected_path
 fc.selected_filename
@@ -100,6 +101,14 @@ fc.selected_filename
 
 
 ## Release notes
+
+### 0.5.0
+
+- Widget width is now configurable using the `layout` property and a `Layout` object
+- Folder paths are now normalized using `os.path.normpath` to properly handle '/' and '\\' on Windows
+- The widget now supports the `value` property to align with other widget types
+- The label showing the selected value now reflows the text to new lines as required (and shows a scrollbar if the value is too long)
+- Buttons now have a minimum width to ensure their text is always visible, regardless of widget width
 
 ### 0.4.4
 

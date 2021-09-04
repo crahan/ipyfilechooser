@@ -1,14 +1,14 @@
 import os
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
-from ipywidgets import Layout, GridBox, HBox, VBox, ValueWidget
+from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents, match_item
 
 
 class FileChooser(VBox, ValueWidget):
     """FileChooser class."""
 
-    _LBL_TEMPLATE = '<span style="margin-left:10px; color:{1};">{0}</span>'
+    _LBL_TEMPLATE = '<span style="color:{1};">{0}</span>'
     _LBL_NOFILE = 'No file selected'
 
     def __init__(
@@ -23,9 +23,10 @@ class FileChooser(VBox, ValueWidget):
             use_dir_icons: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
+            layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
-        self._default_path = path.rstrip(os.path.sep)
+        self._default_path = os.path.normpath(path)
         self._default_filename = filename
         self._selected_path = None
         self._selected_filename = None
@@ -65,13 +66,17 @@ class FileChooser(VBox, ValueWidget):
         self._cancel = Button(
             description='Cancel',
             layout=Layout(
-                width='auto',
+                min_width='6em',
+                width='6em',
                 display='none'
             )
         )
         self._select = Button(
             description=self._select_desc,
-            layout=Layout(width='auto')
+            layout=Layout(
+                min_width='6em',
+                width='6em'
+            )
         )
         self._title = HTML(
             value=title
@@ -91,7 +96,8 @@ class FileChooser(VBox, ValueWidget):
         self._label = HTML(
             value=self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black'),
             placeholder='',
-            description=''
+            description='',
+            layout=Layout(margin='0 0 0 1em')
         )
 
         # Layout
@@ -103,7 +109,7 @@ class FileChooser(VBox, ValueWidget):
             ],
             layout=Layout(
                 display='none',
-                width='500px',
+                width='auto',
                 grid_gap='0px 0px',
                 grid_template_rows='auto auto',
                 grid_template_columns='60% 40%',
@@ -118,7 +124,7 @@ class FileChooser(VBox, ValueWidget):
             children=[
                 self._select,
                 self._cancel,
-                self._label
+                Box([self._label], layout=Layout(overflow='auto'))
             ],
             layout=Layout(width='auto')
         )
@@ -137,7 +143,7 @@ class FileChooser(VBox, ValueWidget):
                 self._gb,
                 buttonbar
             ],
-            layout=Layout(width='auto'),
+            layout=layout,
             **kwargs
         )
 
@@ -318,7 +324,7 @@ class FileChooser(VBox, ValueWidget):
         self._label.value = self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black')
 
         if path is not None:
-            self._default_path = path.rstrip(os.path.sep)
+            self._default_path = os.path.normpath(path)
 
         if filename is not None:
             self._default_filename = filename
@@ -399,7 +405,7 @@ class FileChooser(VBox, ValueWidget):
     @default_path.setter
     def default_path(self, path: str) -> None:
         """Set the default_path."""
-        self._default_path = path.rstrip(os.path.sep)
+        self._default_path = os.path.normpath(path)
         self._set_form_values(self._default_path, self._filename.value)
 
     @property
@@ -452,6 +458,11 @@ class FileChooser(VBox, ValueWidget):
         """Set file name filter pattern."""
         self._filter_pattern = filter_pattern
         self.refresh()
+
+    @property
+    def value(self) -> Optional[str]:
+        """Get selected value."""
+        return self.selected
 
     @property
     def selected(self) -> Optional[str]:

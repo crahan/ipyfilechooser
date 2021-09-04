@@ -1,16 +1,28 @@
-#Ignore vscode individual settings
-.vscode
+# Ignore  macOS .DS_Store files
+.DS_Store
 
-#Ignore egg-info files and folders
-*.egg-info
+# Ignore backup files
+*~
+
+# Ignore vscode individual settings
+.vscode/
+
+# Ignore egg-info files and folders
+*.egg-info/
 *.pyc
 
-#Ignore pyenv version files
+# Ignore pyenv version files
 .python-version
 
-#Ignore build and dist folders
-build/*
-dist/*
+# Ignore build and dist folders
+build/
+dist/
 
-# Jupyter notebook checkpoints
-.ipynb_checkpoints
+# Ignore __pycache__ folder
+__pycache__/
+
+# Ignore Python virtualenv folder
+venv/
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/

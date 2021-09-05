@@ -20,11 +20,10 @@ def get_subpaths(path: str, root_path: str) -> List[str]:
         paths.append(path)
         path, tail = os.path.split(path)
 
-    if root_path != '':
+    if not root_path:
         try:
             # Add Windows drive letters, but remove the current drive
-            drives = get_drive_letters()
-            drives.remove(paths[-1])
+            drives = get_drive_letters(paths[-1])
             paths.extend(drives)
         except ValueError:
             pass
@@ -97,14 +96,20 @@ def prepend_dir_icons(dir_list: Iterable[str]) -> List[str]:
     return ['\U0001F4C1 ' + dirname for dirname in dir_list]
 
 
-def get_drive_letters() -> List[str]:
+def get_drive_letters(path: str) -> List[str]:
     """Get drive letters."""
     if sys.platform == 'win32':
+        # Check if driveletter is upper or lowercase
+        chars = string.ascii_lowercase
+
+        if path[0].isupper():
+            chars = string.ascii_uppercase
+
         # Windows has drive letters
         return [
-            '%s:\\' % d for d in string.ascii_uppercase
-            if os.path.exists('%s:' % d)
-        ]
+            f'{d}:\\' for d in chars
+            if os.path.exists(f'{d}:')
+        ].remove(path)
     else:
         # Unix does not have drive letters
         return []

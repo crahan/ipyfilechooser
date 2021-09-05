@@ -6,26 +6,38 @@ import sys
 from typing import List, Sequence, Iterable, Optional
 
 
-def get_subpaths(path: str) -> List[str]:
+def get_subpaths(path: str, root_path: str) -> List[str]:
     """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
 
+    path = strip_root_path(path, root_path)
     paths = [path]
+
     path, tail = os.path.split(path)
 
     while tail:
         paths.append(path)
         path, tail = os.path.split(path)
 
-    try:
-        # Add Windows drive letters, but remove the current drive
-        drives = get_drive_letters()
-        drives.remove(paths[-1])
-        paths.extend(drives)
-    except ValueError:
-        pass
+    if not root_path:
+        try:
+            # Add Windows drive letters, but remove the current drive
+            drives = get_drive_letters()
+            drives.remove(paths[-1])
+            paths.extend(drives)
+        except ValueError:
+            pass
     return paths
+
+
+def strip_root_path(path: str, root_path: str) -> str:
+    """Remove a root path from a path"""
+    if path == root_path:
+        return os.path.sep
+    elif path.startswith(root_path):
+        return path[len(root_path):]
+    return ''
 
 
 def has_parent(path: str) -> bool:

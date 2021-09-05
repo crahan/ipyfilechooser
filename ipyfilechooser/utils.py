@@ -97,7 +97,7 @@ def prepend_dir_icons(dir_list: Iterable[str]) -> List[str]:
 
 
 def get_drive_letters(path: str) -> List[str]:
-    """Get drive letters."""
+    """Get all drive letters minus the drive used in path."""
     if sys.platform == 'win32':
         # Check if path uses upper or lowercase drive letters
         chars = string.ascii_lowercase

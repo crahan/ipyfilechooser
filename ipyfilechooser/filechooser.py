@@ -23,6 +23,7 @@ class FileChooser(VBox, ValueWidget):
             use_dir_icons: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
+            root_path: str = '',
             layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
@@ -37,6 +38,7 @@ class FileChooser(VBox, ValueWidget):
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
+        self._root_path = root_path
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -160,7 +162,7 @@ class FileChooser(VBox, ValueWidget):
             filename = ''
 
         # Set form values
-        self._pathlist.options = get_subpaths(path)
+        self._pathlist.options = get_subpaths(path, self._root_path)
         self._pathlist.value = path
         self._filename.value = filename
 

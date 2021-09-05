@@ -6,7 +6,7 @@ import sys
 from typing import List, Sequence, Iterable, Optional
 
 
-def get_subpaths(path: str, root_path: str) -> List[str]:
+def get_subpaths(path: str, root_path: str = '') -> List[str]:
     """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
@@ -64,7 +64,8 @@ def get_dir_contents(
         show_hidden: bool = False,
         prepend_icons: bool = False,
         show_only_dirs: bool = False,
-        filter_pattern: Optional[Sequence[str]] = None) -> List[str]:
+        filter_pattern: Optional[Sequence[str]] = None,
+        root_path: str = '') -> List[str]:
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -83,7 +84,7 @@ def get_dir_contents(
                         files.append(item)
                 else:
                     files.append(item)
-        if has_parent(path):
+        if has_parent(strip_root_path(path, root_path)):
             dirs.insert(0, '..')
     if prepend_icons:
         return prepend_dir_icons(sorted(dirs)) + sorted(files)

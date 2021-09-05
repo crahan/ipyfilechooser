@@ -172,7 +172,8 @@ class FileChooser(VBox, ValueWidget):
             show_hidden=self._show_hidden,
             prepend_icons=False,
             show_only_dirs=self._show_only_dirs,
-            filter_pattern=self._filter_pattern
+            filter_pattern=self._filter_pattern,
+            root_path=self._root_path
         )
 
         # file/folder display names
@@ -181,7 +182,8 @@ class FileChooser(VBox, ValueWidget):
             show_hidden=self._show_hidden,
             prepend_icons=self._use_dir_icons,
             show_only_dirs=self._show_only_dirs,
-            filter_pattern=self._filter_pattern
+            filter_pattern=self._filter_pattern,
+            root_path=self._root_path
         )
 
         # Dict to map real names to display names

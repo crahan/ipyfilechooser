@@ -20,7 +20,7 @@ def get_subpaths(path: str, root_path: str) -> List[str]:
         paths.append(path)
         path, tail = os.path.split(path)
 
-    if not root_path:
+    if root_path != '':
         try:
             # Add Windows drive letters, but remove the current drive
             drives = get_drive_letters()

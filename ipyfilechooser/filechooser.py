@@ -2,7 +2,7 @@ import os
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
-from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path
+from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path, is_valid_filename
 
 
 class SandboxPathError(Exception):
@@ -237,22 +237,23 @@ class FileChooser(VBox, ValueWidget):
             # - equal an existing folder in the current view
             # - equal the already selected values
             # - don't match the provided filter pattern(s)
-            # - contains a path separator
+            # - contains an invalid character sequence
             check1 = filename in dircontent_real_names
             check2 = os.path.isdir(os.path.join(path, filename))
-            check3 = False
+            check3 = not is_valid_filename(filename)
             check4 = False
+            check5 = False
 
             # Only check selected if selected is set
             if ((self._selected_path is not None) and (self._selected_filename is not None)):
                 selected = os.path.join(self._selected_path, self._selected_filename)
-                check3 = os.path.join(path, filename) == selected
+                check4 = os.path.join(path, filename) == selected
 
             # Ensure only allowed extensions are used
             if self._filter_pattern:
-                check4 = not match_item(filename, self._filter_pattern)
+                check5 = not match_item(filename, self._filter_pattern)
 
-            if (check1 and check2) or check3 or check4:
+            if (check1 and check2) or check3 or check4 or check5:
                 self._select.disabled = True
             else:
                 self._select.disabled = False

@@ -115,3 +115,13 @@ def get_drive_letters(path: str) -> List[str]:
     else:
         # Unix does not have drive letters
         return []
+
+
+def is_valid_filename(filename: str) -> bool:
+    """Verifies if a filename does not contain illegal character sequences"""
+    return (
+        not filename.startswith('/') and
+        not filename.startswith('\\') and
+        '../' not in filename and
+        '..\\' not in filename
+    )

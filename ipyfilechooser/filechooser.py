@@ -48,7 +48,7 @@ class FileChooser(VBox, ValueWidget):
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
-        self._sandbox_path = os.path.normpath(sandbox_path)
+        self._sandbox_path = os.path.normpath(sandbox_path) if sandbox_path else sandbox_path
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -162,8 +162,9 @@ class FileChooser(VBox, ValueWidget):
     def _set_form_values(self, path: str, filename: str) -> None:
         """Set the form values."""
         # Check if the path falls inside the configured sandbox path
-        if not self._is_sandboxed(os.path.normpath(path)):
-            raise SandboxPathError(path, self._sandbox_path)
+        if self._sandbox_path != '':
+            if not self._is_sandboxed(os.path.normpath(path)):
+                raise SandboxPathError(path, self._sandbox_path)
 
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.

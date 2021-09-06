@@ -30,6 +30,9 @@ def get_subpaths(path: str) -> List[str]:
 
 def strip_parent_path(path: str, parent_path: str) -> str:
     """Remove a parent path from a path."""
+    path = os.path.normcase(path)
+    parent_path = os.path.normcase(parent_path)
+
     if path == parent_path:
         return os.path.sep
     elif path.startswith(parent_path):

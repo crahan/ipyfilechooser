@@ -339,11 +339,11 @@ class FileChooser(VBox, ValueWidget):
 
     def _remove_sandbox(self, path) -> str:
         """Calculate the full path using the sandbox path."""
-        return os.path.normpath(self._sandbox_path + path)
+        return os.path.normpath(self._sandbox_path + os.path.sep + path)
 
     def _apply_sandbox(self, path) -> str:
         """Calculate the sandboxed path using the sandbox path."""
-        return os.path.normpath(strip_parent_path(path, self._sandbox_path))
+        return strip_parent_path(path, self._sandbox_path)
 
     def _is_sandboxed(self, path) -> bool:
         """Verifies if sandbox_path is a parent of path."""

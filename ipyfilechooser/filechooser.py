@@ -162,9 +162,8 @@ class FileChooser(VBox, ValueWidget):
     def _set_form_values(self, path: str, filename: str) -> None:
         """Set the form values."""
         # Check if the path falls inside the configured sandbox path
-        if self._sandbox_path != '':
-            if not self._is_sandboxed(os.path.normpath(path)):
-                raise SandboxPathError(path, self._sandbox_path)
+        if self._sandbox_path and not self._is_sandboxed(os.path.normpath(path)):
+            raise SandboxPathError(path, self._sandbox_path)
 
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.
@@ -238,6 +237,7 @@ class FileChooser(VBox, ValueWidget):
             # - equal an existing folder in the current view
             # - equal the already selected values
             # - don't match the provided filter pattern(s)
+            # - contains a path separator
             check1 = filename in dircontent_real_names
             check2 = os.path.isdir(os.path.join(path, filename))
             check3 = False
@@ -505,7 +505,7 @@ class FileChooser(VBox, ValueWidget):
         selected = None
 
         if ((self._selected_path is not None) and (self._selected_filename is not None)):
-            selected = os.path.join(self._selected_path, self._selected_filename)
+            selected = os.path.normpath(os.path.join(self._selected_path, self._selected_filename))
 
         return selected
 

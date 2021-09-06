@@ -2,7 +2,17 @@ import os
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
-from .utils import get_subpaths, get_dir_contents, match_item
+from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path
+
+
+class SandboxPathError(Exception):
+    """SandboxPathError class."""
+
+    def __init__(self, path: str, sandbox_path: str, message: str = ''):
+        self.path = path
+        self.sandbox_path = sandbox_path
+        self.message = message or f'{sandbox_path} is not a parent of {path}.'
+        super().__init__(self.message)
 
 
 class FileChooser(VBox, ValueWidget):
@@ -23,14 +33,14 @@ class FileChooser(VBox, ValueWidget):
             use_dir_icons: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
-            root_path: str = '',
+            sandbox_path: str = '',
             layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
         self._default_path = os.path.normpath(path)
         self._default_filename = filename
-        self._selected_path = None
-        self._selected_filename = None
+        self._selected_path: Optional[str] = None
+        self._selected_filename: Optional[str] = None
         self._show_hidden = show_hidden
         self._select_desc = select_desc
         self._change_desc = change_desc
@@ -38,7 +48,7 @@ class FileChooser(VBox, ValueWidget):
         self._use_dir_icons = use_dir_icons
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
-        self._root_path = root_path
+        self._sandbox_path = os.path.normpath(sandbox_path)
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -151,6 +161,10 @@ class FileChooser(VBox, ValueWidget):
 
     def _set_form_values(self, path: str, filename: str) -> None:
         """Set the form values."""
+        # Check if the path falls inside the configured sandbox path
+        if not self._is_sandboxed(os.path.normpath(path)):
+            raise SandboxPathError(path, self._sandbox_path)
+
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.
         self._pathlist.unobserve(self._on_pathlist_select, names='value')
@@ -162,8 +176,9 @@ class FileChooser(VBox, ValueWidget):
             filename = ''
 
         # Set form values
-        self._pathlist.options = get_subpaths(path, self._root_path)
-        self._pathlist.value = path
+        sandboxed_path = self._apply_sandbox(path)
+        self._pathlist.options = get_subpaths(sandboxed_path)
+        self._pathlist.value = sandboxed_path
         self._filename.value = filename
 
         # file/folder real names
@@ -173,7 +188,7 @@ class FileChooser(VBox, ValueWidget):
             prepend_icons=False,
             show_only_dirs=self._show_only_dirs,
             filter_pattern=self._filter_pattern,
-            root_path=self._root_path
+            sandbox_path=self._sandbox_path
         )
 
         # file/folder display names
@@ -183,7 +198,7 @@ class FileChooser(VBox, ValueWidget):
             prepend_icons=self._use_dir_icons,
             show_only_dirs=self._show_only_dirs,
             filter_pattern=self._filter_pattern,
-            root_path=self._root_path
+            sandbox_path=self._sandbox_path
         )
 
         # Dict to map real names to display names
@@ -243,25 +258,28 @@ class FileChooser(VBox, ValueWidget):
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a path entry."""
-        self._set_form_values(change['new'], self._filename.value)
+        self._set_form_values(self._remove_sandbox(change['new']), self._filename.value)
 
     def _on_dircontent_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a folder entry."""
-        new_path = os.path.realpath(os.path.join(self._pathlist.value, self._map_disp_to_name[change['new']]))
+        new_path = os.path.realpath(os.path.join(
+            self._remove_sandbox(self._pathlist.value),
+            self._map_disp_to_name[change['new']]
+        ))
 
         # Check if folder or file
         if os.path.isdir(new_path):
             path = new_path
             filename = self._filename.value
         else:
-            path = self._pathlist.value
+            path = self._remove_sandbox(self._pathlist.value)
             filename = self._map_disp_to_name[change['new']]
 
         self._set_form_values(path, filename)
 
     def _on_filename_change(self, change: Mapping[str, str]) -> None:
         """Handle filename field changes."""
-        self._set_form_values(self._pathlist.value, change['new'])
+        self._set_form_values(self._remove_sandbox(self._pathlist.value), change['new'])
 
     def _on_select_click(self, _b) -> None:
         """Handle select button clicks."""
@@ -298,7 +316,7 @@ class FileChooser(VBox, ValueWidget):
 
     def _apply_selection(self) -> None:
         """Close the dialog and apply the selection."""
-        self._selected_path = self._pathlist.value
+        self._selected_path = self._remove_sandbox(self._pathlist.value)
         self._selected_filename = self._filename.value
 
         if ((self._selected_path is not None) and (self._selected_filename is not None)):
@@ -308,15 +326,27 @@ class FileChooser(VBox, ValueWidget):
             self._select.description = self._change_desc
 
             if os.path.isfile(selected):
-                self._label.value = self._LBL_TEMPLATE.format(selected, 'orange')
+                self._label.value = self._LBL_TEMPLATE.format(self._apply_sandbox(selected), 'orange')
             else:
-                self._label.value = self._LBL_TEMPLATE.format(selected, 'green')
+                self._label.value = self._LBL_TEMPLATE.format(self._apply_sandbox(selected), 'green')
 
     def _on_cancel_click(self, _b) -> None:
         """Handle cancel button clicks."""
         self._gb.layout.display = 'none'
         self._cancel.layout.display = 'none'
         self._select.disabled = False
+
+    def _remove_sandbox(self, path) -> str:
+        """Calculate the full path using the sandbox path."""
+        return os.path.normpath(self._sandbox_path + path)
+
+    def _apply_sandbox(self, path) -> str:
+        """Calculate the sandboxed path using the sandbox path."""
+        return os.path.normpath(strip_parent_path(path, self._sandbox_path))
+
+    def _is_sandboxed(self, path) -> bool:
+        """Verifies if sandbox_path is a parent of path."""
+        return os.path.commonpath([self._sandbox_path, path]) == self._sandbox_path
 
     def reset(self, path: Optional[str] = None, filename: Optional[str] = None) -> None:
         """Reset the form to the default path and filename."""
@@ -347,7 +377,7 @@ class FileChooser(VBox, ValueWidget):
 
     def refresh(self) -> None:
         """Re-render the form."""
-        self._set_form_values(self._pathlist.value, self._filename.value)
+        self._set_form_values(self._remove_sandbox(self._pathlist.value), self._filename.value)
 
     @property
     def show_hidden(self) -> bool:
@@ -421,7 +451,7 @@ class FileChooser(VBox, ValueWidget):
     def default_filename(self, filename: str) -> None:
         """Set the default_filename."""
         self._default_filename = filename
-        self._set_form_values(self._pathlist.value, self._default_filename)
+        self._set_form_values(self._remove_sandbox(self._pathlist.value), self._default_filename)
 
     @property
     def show_only_dirs(self) -> bool:

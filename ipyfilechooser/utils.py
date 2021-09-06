@@ -6,23 +6,21 @@ import sys
 from typing import List, Sequence, Iterable, Optional
 
 
-def get_subpaths(path: str, root_path: str = '') -> List[str]:
+def get_subpaths(path: str) -> List[str]:
     """Walk a path and return a list of subpaths."""
     if os.path.isfile(path):
         path = os.path.dirname(path)
 
-    path = strip_root_path(path, root_path)
     paths = [path]
-
     path, tail = os.path.split(path)
 
     while tail:
         paths.append(path)
         path, tail = os.path.split(path)
 
-    if not root_path:
+    if len(os.path.splitdrive(path)[0]) == 2:
+        # If path starts with a drive letter, get the remaining drive letters
         try:
-            # Add Windows drive letters, but remove the current drive
             drives = get_drive_letters(paths[-1])
             paths.extend(drives)
         except ValueError:
@@ -30,12 +28,12 @@ def get_subpaths(path: str, root_path: str = '') -> List[str]:
     return paths
 
 
-def strip_root_path(path: str, root_path: str) -> str:
-    """Remove a root path from a path"""
-    if path == root_path:
+def strip_parent_path(path: str, parent_path: str) -> str:
+    """Remove a parent path from a path."""
+    if path == parent_path:
         return os.path.sep
-    elif path.startswith(root_path):
-        return path[len(root_path):]
+    elif path.startswith(parent_path):
+        return path[len(parent_path):]
     return ''
 
 
@@ -65,7 +63,7 @@ def get_dir_contents(
         prepend_icons: bool = False,
         show_only_dirs: bool = False,
         filter_pattern: Optional[Sequence[str]] = None,
-        root_path: str = '') -> List[str]:
+        sandbox_path: str = '') -> List[str]:
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -84,7 +82,7 @@ def get_dir_contents(
                         files.append(item)
                 else:
                     files.append(item)
-        if has_parent(strip_root_path(path, root_path)):
+        if has_parent(strip_parent_path(path, sandbox_path)):
             dirs.insert(0, '..')
     if prepend_icons:
         return prepend_dir_icons(sorted(dirs)) + sorted(files)

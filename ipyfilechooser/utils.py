@@ -122,6 +122,8 @@ def is_valid_filename(filename: str) -> bool:
     return (
         not filename.startswith('/') and
         not filename.startswith('\\') and
+        not filename.endswith('/') and
+        not filename.endswith('\\') and
         '../' not in filename and
         '..\\' not in filename
     )

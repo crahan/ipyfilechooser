@@ -18,32 +18,25 @@ def get_subpaths(path: str) -> List[str]:
         paths.append(path)
         path, tail = os.path.split(path)
 
-    if len(os.path.splitdrive(path)[0]) == 2:
-        # If path starts with a drive letter, get the remaining drive letters
-        try:
-            drives = get_drive_letters(paths[-1])
-            paths.extend(drives)
-        except ValueError:
-            pass
     return paths
 
 
 def strip_parent_path(path: str, parent_path: str) -> str:
     """Remove a parent path from a path."""
-    # Normalize case so Windows can compare paths in a case-insensitive way
-    path = os.path.normcase(path)
-    parent_path = os.path.normcase(parent_path)
-
-    if path == parent_path:
-        return os.path.sep
-    elif path.startswith(parent_path):
+    if path.startswith(parent_path):
         return path[len(parent_path):]
-    return ''
+
+    return path
 
 
 def has_parent(path: str) -> bool:
     """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
+
+
+def has_parent_path(path: str, parent_path: str) -> bool:
+    """Verifies if path falls under parent_path."""
+    return os.path.commonpath([path, parent_path]) == parent_path
 
 
 def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
@@ -67,7 +60,7 @@ def get_dir_contents(
         prepend_icons: bool = False,
         show_only_dirs: bool = False,
         filter_pattern: Optional[Sequence[str]] = None,
-        sandbox_path: str = '') -> List[str]:
+        top_path: str = '') -> List[str]:
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -86,8 +79,8 @@ def get_dir_contents(
                         files.append(item)
                 else:
                     files.append(item)
-        if has_parent(strip_parent_path(path, sandbox_path)):
-            dirs.insert(0, '..')
+        if has_parent(strip_parent_path(path, top_path)):
+            dirs.insert(0, os.pardir)
     if prepend_icons:
         return prepend_dir_icons(sorted(dirs)) + sorted(files)
     else:
@@ -99,31 +92,29 @@ def prepend_dir_icons(dir_list: Iterable[str]) -> List[str]:
     return ['\U0001F4C1 ' + dirname for dirname in dir_list]
 
 
-def get_drive_letters(path: str) -> List[str]:
+def get_drive_letters() -> List[str]:
     """Get all drive letters minus the drive used in path."""
+    drives: List[str] = []
+
     if sys.platform == 'win32':
-        # Check if path uses upper or lowercase drive letters
-        chars = string.ascii_lowercase
-
-        if path[0].isupper():
-            chars = string.ascii_uppercase
-
         # Windows has drive letters
-        drives = [f'{d}:\\' for d in chars if os.path.exists(f'{d}:')]
-        drives.remove(path)
-        return drives
-    else:
-        # Unix does not have drive letters
-        return []
+        drives = [f'{d}:\\' for d in string.ascii_lowercase if os.path.exists(f'{d}:')]
+
+    return drives
 
 
 def is_valid_filename(filename: str) -> bool:
     """Verifies if a filename does not contain illegal character sequences"""
-    return (
-        not filename.startswith('/') and
-        not filename.startswith('\\') and
-        not filename.endswith('/') and
-        not filename.endswith('\\') and
-        '../' not in filename and
-        '..\\' not in filename
-    )
+    valid = True
+    valid = valid and os.pardir not in filename
+    valid = valid and os.sep not in filename
+
+    if os.altsep:
+        valid = valid and os.altsep not in filename
+
+    return valid
+
+
+def normalize_path(path: str) -> str:
+    """Normalize a path string."""
+    return os.path.normpath(os.path.normcase(path))

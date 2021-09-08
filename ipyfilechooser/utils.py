@@ -36,7 +36,12 @@ def has_parent(path: str) -> bool:
 
 def has_parent_path(path: str, parent_path: str) -> bool:
     """Verifies if path falls under parent_path."""
-    return os.path.commonpath([path, parent_path]) == parent_path
+    if parent_path:
+        check = os.path.commonpath([path, parent_path]) == parent_path
+    else:
+        check = True
+
+    return check
 
 
 def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
@@ -117,4 +122,9 @@ def is_valid_filename(filename: str) -> bool:
 
 def normalize_path(path: str) -> str:
     """Normalize a path string."""
-    return os.path.normpath(os.path.normcase(path))
+    normalized_path = ''
+
+    if path:
+        normalized_path = os.path.normpath(os.path.normcase(path))
+
+    return normalized_path

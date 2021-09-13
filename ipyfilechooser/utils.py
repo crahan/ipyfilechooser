@@ -103,7 +103,7 @@ def get_drive_letters() -> List[str]:
 
     if sys.platform == 'win32':
         # Windows has drive letters
-        drives = [f'{d}:\\' for d in string.ascii_lowercase if os.path.exists(f'{d}:')]
+        drives = [os.path.realpath(f'{d}:\\') for d in string.ascii_uppercase if os.path.exists(f'{d}:')]
 
     return drives
 

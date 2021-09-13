@@ -201,7 +201,7 @@ class FileChooser(VBox, ValueWidget):
         restricted_path = self._restrict_path(path)
         subpaths = get_subpaths(restricted_path)
 
-        if len(os.path.splitdrive(subpaths[-1])) == 2:
+        if len(os.path.splitdrive(subpaths[-1])[0]) == 2:
             # Add missing Windows drive letters
             drives = get_drive_letters()
             subpaths.extend(list(set(drives) - set(subpaths)))

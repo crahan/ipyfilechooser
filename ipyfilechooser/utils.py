@@ -125,6 +125,6 @@ def normalize_path(path: str) -> str:
     normalized_path = ''
 
     if path:
-        normalized_path = os.path.normpath(os.path.normcase(path))
+        normalized_path = os.path.realpath(path)
 
     return normalized_path

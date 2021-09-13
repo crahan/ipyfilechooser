@@ -23,10 +23,12 @@ def get_subpaths(path: str) -> List[str]:
 
 def strip_parent_path(path: str, parent_path: str) -> str:
     """Remove a parent path from a path."""
-    if path.startswith(parent_path):
-        return path[len(parent_path):]
+    stripped_path = path
 
-    return path
+    if path.startswith(parent_path):
+        stripped_path = path[len(parent_path):]
+
+    return stripped_path
 
 
 def has_parent(path: str) -> bool:
@@ -36,10 +38,10 @@ def has_parent(path: str) -> bool:
 
 def has_parent_path(path: str, parent_path: str) -> bool:
     """Verifies if path falls under parent_path."""
+    check = True
+
     if parent_path:
         check = os.path.commonpath([path, parent_path]) == parent_path
-    else:
-        check = True
 
     return check
 

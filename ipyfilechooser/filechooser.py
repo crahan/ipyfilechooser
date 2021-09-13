@@ -44,7 +44,7 @@ class FileChooser(VBox, ValueWidget):
             change_desc: str = 'Change',
             show_hidden: bool = False,
             select_default: bool = False,
-            use_dir_icons: bool = False,
+            dir_icon: Optional[str] = '\U0001F4C1',
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
             sandbox_path: str = '',
@@ -67,7 +67,7 @@ class FileChooser(VBox, ValueWidget):
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._select_default = select_default
-        self._use_dir_icons = use_dir_icons
+        self._dir_icon = dir_icon
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
         self._sandbox_path = normalize_path(sandbox_path)
@@ -214,8 +214,8 @@ class FileChooser(VBox, ValueWidget):
         dircontent_real_names = get_dir_contents(
             path,
             show_hidden=self._show_hidden,
-            prepend_icons=False,
             show_only_dirs=self._show_only_dirs,
+            dir_icon='',
             filter_pattern=self._filter_pattern,
             top_path=self._sandbox_path
         )
@@ -224,8 +224,8 @@ class FileChooser(VBox, ValueWidget):
         dircontent_display_names = get_dir_contents(
             path,
             show_hidden=self._show_hidden,
-            prepend_icons=self._use_dir_icons,
             show_only_dirs=self._show_only_dirs,
+            dir_icon=self._dir_icon,
             filter_pattern=self._filter_pattern,
             top_path=self._sandbox_path
         )
@@ -355,6 +355,7 @@ class FileChooser(VBox, ValueWidget):
             self._gb.layout.display = 'none'
             self._cancel.layout.display = 'none'
             self._select.description = self._change_desc
+            self._select.disabled = False
 
             if os.path.isfile(selected):
                 self._label.value = self._LBL_TEMPLATE.format(self._restrict_path(selected), 'orange')
@@ -393,11 +394,17 @@ class FileChooser(VBox, ValueWidget):
         if filename is not None and not is_valid_filename(filename):
             raise InvalidFileNameError(filename)
 
+        # Remove selection
         self._selected_path = None
         self._selected_filename = None
 
+        # Hide dialog and cancel button
+        self._gb.layout.display = 'none'
+        self._cancel.layout.display = 'none'
+
         # Reset select button and label
         self._select.description = self._select_desc
+        self._select.disabled = False
         self._label.value = self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black')
 
         if path is not None:
@@ -406,13 +413,7 @@ class FileChooser(VBox, ValueWidget):
         if filename is not None:
             self._default_filename = filename
 
-        # Set a proper filename value
-        if self._show_only_dirs:
-            filename = ''
-        else:
-            filename = self._default_filename
-
-        self._set_form_values(self._default_path, filename)
+        self._set_form_values(self._default_path, self._default_filename)
 
         # Use the defaults as the selected values
         if self._select_default:
@@ -434,14 +435,14 @@ class FileChooser(VBox, ValueWidget):
         self.refresh()
 
     @property
-    def use_dir_icons(self) -> bool:
-        """Get _use_dir_icons value."""
-        return self._use_dir_icons
+    def dir_icon(self) -> Optional[str]:
+        """Get dir icon value."""
+        return self._dir_icon
 
-    @use_dir_icons.setter
-    def use_dir_icons(self, dir_icons: bool) -> None:
-        """Set _use_dir_icons value."""
-        self._use_dir_icons = dir_icons
+    @dir_icon.setter
+    def dir_icon(self, dir_icon: Optional[str]) -> None:
+        """Set dir icon value."""
+        self._dir_icon = dir_icon
         self.refresh()
 
     @property
@@ -588,27 +589,26 @@ class FileChooser(VBox, ValueWidget):
 
     def __repr__(self) -> str:
         """Build string representation."""
-        str_ = (
-            "FileChooser("
-            "path='{0}', "
-            "filename='{1}', "
-            "title='{2}', "
-            "show_hidden='{3}', "
-            "use_dir_icons='{4}', "
-            "show_only_dirs='{5}', "
-            "select_desc='{6}', "
-            "change_desc='{7}')"
-        ).format(
-            self._default_path,
-            self._default_filename,
-            self._title,
-            self._show_hidden,
-            self._use_dir_icons,
-            self._show_only_dirs,
-            self._select_desc,
-            self._change_desc
-        )
-        return str_
+        properties = f"path='{self._default_path}'"
+        properties += f", filename='{self._default_filename}'"
+        properties += f", sandbox_path='{self._sandbox_path}'"
+        properties += f", title='{self._title.value}'"
+        properties += f", show_hidden={self._show_hidden}"
+        properties += f", select_desc='{self._select_desc}'"
+        properties += f", change_desc='{self._change_desc}'"
+        properties += f", select_default={self._select_default}"
+        properties += f", show_only_dirs={self._show_only_dirs}"
+
+        if self._dir_icon:
+            properties += f", dir_icon='{self._dir_icon}'"
+
+        if self._filter_pattern:
+            if isinstance(self._filter_pattern, str):
+                properties += f", filter_pattern='{self._filter_pattern}'"
+            else:
+                properties += f", filter_pattern={self._filter_pattern}"
+
+        return f"{self.__class__.__name__}({properties})"
 
     def register_callback(self, callback: Callable[[Optional['FileChooser']], None]) -> None:
         """Register a callback function."""

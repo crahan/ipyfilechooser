@@ -3,7 +3,7 @@ from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
 from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path
-from .utils import is_valid_filename, get_drive_letters, normalize_path, has_parent_path
+from .utils import is_valid_filename, get_drive_letters, has_parent_path
 
 
 class SandboxPathError(Exception):
@@ -52,14 +52,14 @@ class FileChooser(VBox, ValueWidget):
             **kwargs):
         """Initialize FileChooser object."""
         # Check if path and sandbox_path align
-        if not has_parent_path(normalize_path(path), normalize_path(sandbox_path)):
+        if not has_parent_path(os.path.realpath(path), os.path.realpath(sandbox_path)):
             raise SandboxPathError(path, sandbox_path)
 
         # Verify the filename is valid
         if not is_valid_filename(filename):
             raise InvalidFileNameError(filename)
 
-        self._default_path = normalize_path(path)
+        self._default_path = os.path.realpath(path)
         self._default_filename = filename
         self._selected_path: Optional[str] = None
         self._selected_filename: Optional[str] = None
@@ -70,7 +70,7 @@ class FileChooser(VBox, ValueWidget):
         self._dir_icon = dir_icon
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
-        self._sandbox_path = normalize_path(sandbox_path)
+        self._sandbox_path = os.path.realpath(sandbox_path)
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -387,7 +387,7 @@ class FileChooser(VBox, ValueWidget):
     def reset(self, path: Optional[str] = None, filename: Optional[str] = None) -> None:
         """Reset the form to the default path and filename."""
         # Check if path and sandbox_path align
-        if path is not None and not has_parent_path(normalize_path(path), self._sandbox_path):
+        if path is not None and not has_parent_path(os.path.realpath(path), self._sandbox_path):
             raise SandboxPathError(path, self._sandbox_path)
 
         # Verify the filename is valid
@@ -408,7 +408,7 @@ class FileChooser(VBox, ValueWidget):
         self._label.value = self._LBL_TEMPLATE.format(self._LBL_NOFILE, 'black')
 
         if path is not None:
-            self._default_path = normalize_path(path)
+            self._default_path = os.path.realpath(path)
 
         if filename is not None:
             self._default_filename = filename
@@ -484,10 +484,10 @@ class FileChooser(VBox, ValueWidget):
     def default_path(self, path: str) -> None:
         """Set the default_path."""
         # Check if path and sandbox_path align
-        if not has_parent_path(normalize_path(path), self._sandbox_path):
+        if not has_parent_path(os.path.realpath(path), self._sandbox_path):
             raise SandboxPathError(path, self._sandbox_path)
 
-        self._default_path = normalize_path(path)
+        self._default_path = os.path.realpath(path)
         self._set_form_values(self._default_path, self._filename.value)
 
     @property
@@ -514,10 +514,10 @@ class FileChooser(VBox, ValueWidget):
     def sandbox_path(self, sandbox_path: str) -> None:
         """Set the sandbox_path."""
         # Check if path and sandbox_path align
-        if not has_parent_path(self._default_path, normalize_path(sandbox_path)):
+        if not has_parent_path(self._default_path, os.path.realpath(sandbox_path)):
             raise SandboxPathError(self._default_path, sandbox_path)
 
-        self._sandbox_path = normalize_path(sandbox_path)
+        self._sandbox_path = os.path.realpath(sandbox_path)
 
         # Reset the dialog
         self.reset()

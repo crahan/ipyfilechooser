@@ -618,6 +618,9 @@ class FileChooser(VBox, ValueWidget):
         if self._dir_icon:
             properties += f", dir_icon='{self._dir_icon}'"
 
+        if self._dir_icon_append:
+            properties += f", dir_icon_append={self._dir_icon_append}"
+
         if self._filter_pattern:
             if isinstance(self._filter_pattern, str):
                 properties += f", filter_pattern='{self._filter_pattern}'"

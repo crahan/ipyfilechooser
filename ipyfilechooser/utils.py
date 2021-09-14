@@ -21,22 +21,12 @@ def get_subpaths(path: str) -> List[str]:
     return paths
 
 
-def strip_parent_path(path: str, parent_path: str) -> str:
-    """Remove a parent path from a path."""
-    stripped_path = path
-
-    if path.startswith(parent_path):
-        stripped_path = path[len(parent_path):]
-
-    return stripped_path
-
-
 def has_parent(path: str) -> bool:
     """Check if a path has a parent folder."""
     return os.path.basename(path) != ''
 
 
-def has_parent_path(path: str, parent_path: str) -> bool:
+def has_parent_path(path: str, parent_path: Optional[str]) -> bool:
     """Verifies if path falls under parent_path."""
     check = True
 
@@ -44,6 +34,16 @@ def has_parent_path(path: str, parent_path: str) -> bool:
         check = os.path.commonpath([path, parent_path]) == parent_path
 
     return check
+
+
+def strip_parent_path(path: str, parent_path: Optional[str]) -> str:
+    """Remove a parent path from a path."""
+    stripped_path = path
+
+    if parent_path and path.startswith(parent_path):
+        stripped_path = path[len(parent_path):]
+
+    return stripped_path
 
 
 def match_item(item: str, filter_pattern: Sequence[str]) -> bool:
@@ -67,7 +67,7 @@ def get_dir_contents(
         show_only_dirs: bool = False,
         dir_icon: Optional[str] = None,
         filter_pattern: Optional[Sequence[str]] = None,
-        top_path: str = '') -> List[str]:
+        top_path: Optional[str] = None) -> List[str]:
     """Get directory contents."""
     files = list()
     dirs = list()
@@ -124,9 +124,4 @@ def is_valid_filename(filename: str) -> bool:
 
 def normalize_path(path: str) -> str:
     """Normalize a path string."""
-    normalized_path = ''
-
-    if path:
-        normalized_path = os.path.realpath(path)
-
-    return normalized_path
+    return os.path.realpath(path)

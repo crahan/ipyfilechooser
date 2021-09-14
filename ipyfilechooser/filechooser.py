@@ -9,7 +9,7 @@ from .utils import is_valid_filename, get_drive_letters, normalize_path, has_par
 class SandboxPathError(Exception):
     """SandboxPathError class."""
 
-    def __init__(self, path: str, sandbox_path: str, message: str = ''):
+    def __init__(self, path: str, sandbox_path: str, message: Optional[str] = None):
         self.path = path
         self.sandbox_path = sandbox_path
         self.message = message or f'{path} is located outside of {sandbox_path}'
@@ -23,7 +23,7 @@ class InvalidFileNameError(Exception):
     if os.altsep:
         invalid_str.append(os.altsep)
 
-    def __init__(self, filename: str, message: str = ''):
+    def __init__(self, filename: str, message: Optional[str] = None):
         self.filename = filename
         self.message = message or f'{filename} cannot contain {self.invalid_str}'
         super().__init__(self.message)
@@ -47,12 +47,12 @@ class FileChooser(VBox, ValueWidget):
             dir_icon: Optional[str] = '\U0001F4C1',
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
-            sandbox_path: str = '',
+            sandbox_path: Optional[str] = None,
             layout: Layout = Layout(width='500px'),
             **kwargs):
         """Initialize FileChooser object."""
         # Check if path and sandbox_path align
-        if not has_parent_path(normalize_path(path), normalize_path(sandbox_path)):
+        if sandbox_path and not has_parent_path(normalize_path(path), normalize_path(sandbox_path)):
             raise SandboxPathError(path, sandbox_path)
 
         # Verify the filename is valid
@@ -70,7 +70,7 @@ class FileChooser(VBox, ValueWidget):
         self._dir_icon = dir_icon
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
-        self._sandbox_path = normalize_path(sandbox_path)
+        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path else None
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -184,7 +184,7 @@ class FileChooser(VBox, ValueWidget):
     def _set_form_values(self, path: str, filename: str) -> None:
         """Set the form values."""
         # Check if the path falls inside the configured sandbox path
-        if not has_parent_path(path, self._sandbox_path):
+        if self._sandbox_path and not has_parent_path(path, self._sandbox_path):
             raise SandboxPathError(path, self._sandbox_path)
 
         # Disable triggers to prevent selecting an entry in the Select
@@ -387,7 +387,7 @@ class FileChooser(VBox, ValueWidget):
     def reset(self, path: Optional[str] = None, filename: Optional[str] = None) -> None:
         """Reset the form to the default path and filename."""
         # Check if path and sandbox_path align
-        if path is not None and not has_parent_path(normalize_path(path), self._sandbox_path):
+        if path is not None and self._sandbox_path and not has_parent_path(normalize_path(path), self._sandbox_path):
             raise SandboxPathError(path, self._sandbox_path)
 
         # Verify the filename is valid
@@ -484,7 +484,7 @@ class FileChooser(VBox, ValueWidget):
     def default_path(self, path: str) -> None:
         """Set the default_path."""
         # Check if path and sandbox_path align
-        if not has_parent_path(normalize_path(path), self._sandbox_path):
+        if self._sandbox_path and not has_parent_path(normalize_path(path), self._sandbox_path):
             raise SandboxPathError(path, self._sandbox_path)
 
         self._default_path = normalize_path(path)
@@ -506,7 +506,7 @@ class FileChooser(VBox, ValueWidget):
         self._set_form_values(self._expand_path(self._pathlist.value), self._default_filename)
 
     @property
-    def sandbox_path(self) -> str:
+    def sandbox_path(self) -> Optional[str]:
         """Get the sandbox_path."""
         return self._sandbox_path
 
@@ -514,10 +514,10 @@ class FileChooser(VBox, ValueWidget):
     def sandbox_path(self, sandbox_path: str) -> None:
         """Set the sandbox_path."""
         # Check if path and sandbox_path align
-        if not has_parent_path(self._default_path, normalize_path(sandbox_path)):
+        if sandbox_path and not has_parent_path(self._default_path, normalize_path(sandbox_path)):
             raise SandboxPathError(self._default_path, sandbox_path)
 
-        self._sandbox_path = normalize_path(sandbox_path)
+        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path else None
 
         # Reset the dialog
         self.reset()
@@ -591,13 +591,15 @@ class FileChooser(VBox, ValueWidget):
         """Build string representation."""
         properties = f"path='{self._default_path}'"
         properties += f", filename='{self._default_filename}'"
-        properties += f", sandbox_path='{self._sandbox_path}'"
         properties += f", title='{self._title.value}'"
         properties += f", show_hidden={self._show_hidden}"
         properties += f", select_desc='{self._select_desc}'"
         properties += f", change_desc='{self._change_desc}'"
         properties += f", select_default={self._select_default}"
         properties += f", show_only_dirs={self._show_only_dirs}"
+
+        if self._sandbox_path:
+            properties += f", sandbox_path='{self._sandbox_path}'"
 
         if self._dir_icon:
             properties += f", dir_icon='{self._dir_icon}'"

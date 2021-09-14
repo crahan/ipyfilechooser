@@ -70,7 +70,7 @@ class FileChooser(VBox, ValueWidget):
         self._dir_icon = dir_icon
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
-        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path else None
+        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path is not None else None
         self._callback: Optional[Callable] = None
 
         # Widgets
@@ -517,7 +517,7 @@ class FileChooser(VBox, ValueWidget):
         if sandbox_path and not has_parent_path(self._default_path, normalize_path(sandbox_path)):
             raise SandboxPathError(self._default_path, sandbox_path)
 
-        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path else None
+        self._sandbox_path = normalize_path(sandbox_path) if sandbox_path is not None else None
 
         # Reset the dialog
         self.reset()
@@ -598,7 +598,7 @@ class FileChooser(VBox, ValueWidget):
         properties += f", select_default={self._select_default}"
         properties += f", show_only_dirs={self._show_only_dirs}"
 
-        if self._sandbox_path:
+        if self._sandbox_path is not None:
             properties += f", sandbox_path='{self._sandbox_path}'"
 
         if self._dir_icon:

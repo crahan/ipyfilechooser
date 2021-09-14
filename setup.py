@@ -11,7 +11,7 @@ def read(fname: str) -> str:
 
 setup(
     name='ipyfilechooser',
-    version='0.5.0',
+    version='0.6.0',
     author='Thomas Bouve (@crahan)',
     author_email='crahan@n00.be',
     description=(

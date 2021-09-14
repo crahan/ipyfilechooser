@@ -11,7 +11,7 @@ class FileChooser(VBox, ValueWidget):
     """FileChooser class."""
 
     _LBL_TEMPLATE = '<span style="color:{1};">{0}</span>'
-    _LBL_NOFILE = 'No file selected'
+    _LBL_NOFILE = 'No selection'
 
     def __init__(
             self,

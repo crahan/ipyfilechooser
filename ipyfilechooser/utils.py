@@ -4,6 +4,7 @@ import os
 import string
 import sys
 from typing import List, Sequence, Iterable, Optional
+from .errors import InvalidPathError
 
 
 def get_subpaths(path: str) -> List[str]:
@@ -130,4 +131,9 @@ def is_valid_filename(filename: str) -> bool:
 
 def normalize_path(path: str) -> str:
     """Normalize a path string."""
-    return os.path.realpath(path)
+    normalized_path = os.path.realpath(path)
+
+    if not os.path.isdir(normalized_path):
+        raise InvalidPathError(path)
+
+    return normalized_path

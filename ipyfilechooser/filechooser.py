@@ -2,31 +2,9 @@ import os
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
+from .errors import ParentPathError, InvalidFileNameError
 from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path
 from .utils import is_valid_filename, get_drive_letters, normalize_path, has_parent_path
-
-
-class SandboxPathError(Exception):
-    """SandboxPathError class."""
-
-    def __init__(self, path: str, sandbox_path: str, message: Optional[str] = None):
-        self.path = path
-        self.sandbox_path = sandbox_path
-        self.message = message or f'{path} is located outside of {sandbox_path} sandbox'
-        super().__init__(self.message)
-
-
-class InvalidFileNameError(Exception):
-    """InvalidFileNameError class."""
-    invalid_str = [os.sep, os.pardir]
-
-    if os.altsep:
-        invalid_str.append(os.altsep)
-
-    def __init__(self, filename: str, message: Optional[str] = None):
-        self.filename = filename
-        self.message = message or f'{filename} cannot contain {self.invalid_str}'
-        super().__init__(self.message)
 
 
 class FileChooser(VBox, ValueWidget):
@@ -54,7 +32,7 @@ class FileChooser(VBox, ValueWidget):
         """Initialize FileChooser object."""
         # Check if path and sandbox_path align
         if sandbox_path and not has_parent_path(normalize_path(path), normalize_path(sandbox_path)):
-            raise SandboxPathError(path, sandbox_path)
+            raise ParentPathError(path, sandbox_path)
 
         # Verify the filename is valid
         if not is_valid_filename(filename):
@@ -187,7 +165,7 @@ class FileChooser(VBox, ValueWidget):
         """Set the form values."""
         # Check if the path falls inside the configured sandbox path
         if self._sandbox_path and not has_parent_path(path, self._sandbox_path):
-            raise SandboxPathError(path, self._sandbox_path)
+            raise ParentPathError(path, self._sandbox_path)
 
         # Disable triggers to prevent selecting an entry in the Select
         # box from automatically triggering a new event.
@@ -380,7 +358,9 @@ class FileChooser(VBox, ValueWidget):
 
     def _restrict_path(self, path) -> str:
         """Calculate the sandboxed path using the sandbox path."""
-        if self._sandbox_path == path:
+        if self._sandbox_path == os.sep:
+            pass
+        elif self._sandbox_path == path:
             path = os.sep
         elif self._sandbox_path:
             if os.path.splitdrive(self._sandbox_path)[0] and len(self._sandbox_path) == 3:
@@ -395,7 +375,7 @@ class FileChooser(VBox, ValueWidget):
         """Reset the form to the default path and filename."""
         # Check if path and sandbox_path align
         if path is not None and self._sandbox_path and not has_parent_path(normalize_path(path), self._sandbox_path):
-            raise SandboxPathError(path, self._sandbox_path)
+            raise ParentPathError(path, self._sandbox_path)
 
         # Verify the filename is valid
         if filename is not None and not is_valid_filename(filename):
@@ -503,7 +483,7 @@ class FileChooser(VBox, ValueWidget):
         """Set the default_path."""
         # Check if path and sandbox_path align
         if self._sandbox_path and not has_parent_path(normalize_path(path), self._sandbox_path):
-            raise SandboxPathError(path, self._sandbox_path)
+            raise ParentPathError(path, self._sandbox_path)
 
         self._default_path = normalize_path(path)
         self._set_form_values(self._default_path, self._filename.value)
@@ -533,7 +513,7 @@ class FileChooser(VBox, ValueWidget):
         """Set the sandbox_path."""
         # Check if path and sandbox_path align
         if sandbox_path and not has_parent_path(self._default_path, normalize_path(sandbox_path)):
-            raise SandboxPathError(self._default_path, sandbox_path)
+            raise ParentPathError(self._default_path, sandbox_path)
 
         self._sandbox_path = normalize_path(sandbox_path) if sandbox_path is not None else None
 

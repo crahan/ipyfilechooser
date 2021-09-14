@@ -66,6 +66,7 @@ def get_dir_contents(
         show_hidden: bool = False,
         show_only_dirs: bool = False,
         dir_icon: Optional[str] = None,
+        dir_icon_append: bool = False,
         filter_pattern: Optional[Sequence[str]] = None,
         top_path: Optional[str] = None) -> List[str]:
     """Get directory contents."""
@@ -89,14 +90,19 @@ def get_dir_contents(
         if has_parent(strip_parent_path(path, top_path)):
             dirs.insert(0, os.pardir)
     if dir_icon:
-        return prepend_dir_icons(sorted(dirs), dir_icon) + sorted(files)
+        return prepend_dir_icons(sorted(dirs), dir_icon, dir_icon_append) + sorted(files)
     else:
         return sorted(dirs) + sorted(files)
 
 
-def prepend_dir_icons(dir_list: Iterable[str], dir_icon: str) -> List[str]:
+def prepend_dir_icons(dir_list: Iterable[str], dir_icon: str, dir_icon_append: bool = False) -> List[str]:
     """Prepend unicode folder icon to directory names."""
-    return [f'{dir_icon}' + dirname for dirname in dir_list]
+    if dir_icon_append:
+        str_ = [dirname + f'{dir_icon}' for dirname in dir_list]
+    else:
+        str_ = [f'{dir_icon}' + dirname for dirname in dir_list]
+
+    return str_
 
 
 def get_drive_letters() -> List[str]:

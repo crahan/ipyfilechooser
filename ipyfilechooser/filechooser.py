@@ -45,6 +45,7 @@ class FileChooser(VBox, ValueWidget):
             show_hidden: bool = False,
             select_default: bool = False,
             dir_icon: Optional[str] = '\U0001F4C1 ',
+            dir_icon_append: bool = False,
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
             sandbox_path: Optional[str] = None,
@@ -68,6 +69,7 @@ class FileChooser(VBox, ValueWidget):
         self._change_desc = change_desc
         self._select_default = select_default
         self._dir_icon = dir_icon
+        self._dir_icon_append = dir_icon_append
         self._show_only_dirs = show_only_dirs
         self._filter_pattern = filter_pattern
         self._sandbox_path = normalize_path(sandbox_path) if sandbox_path is not None else None
@@ -215,7 +217,7 @@ class FileChooser(VBox, ValueWidget):
             path,
             show_hidden=self._show_hidden,
             show_only_dirs=self._show_only_dirs,
-            dir_icon='',
+            dir_icon=None,
             filter_pattern=self._filter_pattern,
             top_path=self._sandbox_path
         )
@@ -226,6 +228,7 @@ class FileChooser(VBox, ValueWidget):
             show_hidden=self._show_hidden,
             show_only_dirs=self._show_only_dirs,
             dir_icon=self._dir_icon,
+            dir_icon_append=self._dir_icon_append,
             filter_pattern=self._filter_pattern,
             top_path=self._sandbox_path
         )
@@ -443,6 +446,17 @@ class FileChooser(VBox, ValueWidget):
     def dir_icon(self, dir_icon: Optional[str]) -> None:
         """Set dir icon value."""
         self._dir_icon = dir_icon
+        self.refresh()
+
+    @property
+    def dir_icon_append(self) -> bool:
+        """Get dir icon value."""
+        return self._dir_icon_append
+
+    @dir_icon_append.setter
+    def dir_icon_append(self, dir_icon_append: bool) -> None:
+        """Prepend or append the dir icon."""
+        self._dir_icon_append = dir_icon_append
         self.refresh()
 
     @property

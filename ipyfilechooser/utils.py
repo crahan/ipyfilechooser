@@ -96,7 +96,7 @@ def get_dir_contents(
 
 def prepend_dir_icons(dir_list: Iterable[str], dir_icon: str) -> List[str]:
     """Prepend unicode folder icon to directory names."""
-    return [f'{dir_icon} ' + dirname for dirname in dir_list]
+    return [f'{dir_icon}' + dirname for dirname in dir_list]
 
 
 def get_drive_letters() -> List[str]:

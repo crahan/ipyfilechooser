@@ -44,7 +44,7 @@ class FileChooser(VBox, ValueWidget):
             change_desc: str = 'Change',
             show_hidden: bool = False,
             select_default: bool = False,
-            dir_icon: Optional[str] = '\U0001F4C1',
+            dir_icon: Optional[str] = '\U0001F4C1 ',
             show_only_dirs: bool = False,
             filter_pattern: Optional[Sequence[str]] = None,
             sandbox_path: Optional[str] = None,

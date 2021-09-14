@@ -12,7 +12,7 @@ class SandboxPathError(Exception):
     def __init__(self, path: str, sandbox_path: str, message: Optional[str] = None):
         self.path = path
         self.sandbox_path = sandbox_path
-        self.message = message or f'{path} is located outside of {sandbox_path}'
+        self.message = message or f'{path} is located outside of {sandbox_path} sandbox'
         super().__init__(self.message)
 
 

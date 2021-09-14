@@ -615,15 +615,13 @@ class FileChooser(VBox, ValueWidget):
         properties += f", change_desc='{self._change_desc}'"
         properties += f", select_default={self._select_default}"
         properties += f", show_only_dirs={self._show_only_dirs}"
+        properties += f", dir_icon_append={self._dir_icon_append}"
 
         if self._sandbox_path is not None:
             properties += f", sandbox_path='{self._sandbox_path}'"
 
         if self._dir_icon:
             properties += f", dir_icon='{self._dir_icon}'"
-
-        if self._dir_icon_append:
-            properties += f", dir_icon_append={self._dir_icon_append}"
 
         if self._filter_pattern:
             if isinstance(self._filter_pattern, str):

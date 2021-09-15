@@ -168,15 +168,15 @@ class FileChooser(VBox, ValueWidget):
         if self._sandbox_path and not has_parent_path(path, self._sandbox_path):
             raise ParentPathError(path, self._sandbox_path)
 
+        # Disable triggers to prevent selecting an entry in the Select
+        # box from automatically triggering a new event.
+        self._pathlist.unobserve(self._on_pathlist_select, names='value')
+        self._dircontent.unobserve(self._on_dircontent_select, names='value')
+        self._filename.unobserve(self._on_filename_change, names='value')
+
         try:
             # Fail early if the folder can not be read
             _ = os.listdir(path)
-
-            # Disable triggers to prevent selecting an entry in the Select
-            # box from automatically triggering a new event.
-            self._pathlist.unobserve(self._on_pathlist_select, names='value')
-            self._dircontent.unobserve(self._on_dircontent_select, names='value')
-            self._filename.unobserve(self._on_filename_change, names='value')
 
             # In folder only mode zero out the filename
             if self._show_only_dirs:
@@ -241,11 +241,6 @@ class FileChooser(VBox, ValueWidget):
             else:
                 self._dircontent.value = None
 
-            # Reenable triggers again
-            self._pathlist.observe(self._on_pathlist_select, names='value')
-            self._dircontent.observe(self._on_dircontent_select, names='value')
-            self._filename.observe(self._on_filename_change, names='value')
-
             # Update the state of the select button
             if self._gb.layout.display is None:
                 # Disable the select button if path and filename
@@ -274,10 +269,13 @@ class FileChooser(VBox, ValueWidget):
                     self._select.disabled = False
         except PermissionError:
             # Deselect the unreadable folder and generate a warning
-            self._dircontent.unobserve(self._on_dircontent_select, names='value')
             self._dircontent.value = None
-            self._dircontent.observe(self._on_dircontent_select, names='value')
             warnings.warn(f'Permission denied for {path}', RuntimeWarning)
+
+        # Reenable triggers
+        self._pathlist.observe(self._on_pathlist_select, names='value')
+        self._dircontent.observe(self._on_dircontent_select, names='value')
+        self._filename.observe(self._on_filename_change, names='value')
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a path entry."""

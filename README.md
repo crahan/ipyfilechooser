@@ -30,11 +30,15 @@ fc.reset()
 # Shorthand reset
 fc.reset(path='/Users/crahan/', filename='output.txt')
 
+# Restrict navigation to /Users
+fc.sandbox_path = '/Users'
+
 # Change hidden files
 fc.show_hidden = True
 
-# Show or hide folder icons
-fc.use_dir_icons = True
+# Customize dir icon
+fc.dir_icon = '/'
+fc.dir_icon_append = True
 
 # Switch to folder-only mode
 fc.show_only_dirs = True
@@ -63,7 +67,8 @@ fc.reset()
 fc.refresh()
 fc.register_callback(function_name)
 fc.show_hidden
-fc.use_dir_icons
+fc.dir_icon
+fc.dir_icon_append
 fc.show_only_dirs
 fc.rows
 fc.title
@@ -71,6 +76,7 @@ fc.filter_pattern
 fc.default
 fc.default_path
 fc.default_filename
+fc.sandbox_path
 fc.value
 fc.selected
 fc.selected_path
@@ -99,8 +105,22 @@ fc.selected_filename
 
 ![Screenshot 6](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_6.png)
 
+### Restrict navigation
+
+![Screenshot 7](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_7.png)
 
 ## Release notes
+
+### 0.6.0
+
+- The ability to restrict file browsing to a `sandbox_path` folder has finally been added!
+- Filenames can not contain path separator characters or parent folder strings (i.e., '..')
+- `use_dir_icons` has been replaced with `dir_icon` which allows for customizing the folder icon
+- `dir_icon_append` can now be used to put the folder icon before or after the folder name
+- Better error handling with `ParentPathError`, `InvalidPathError`, and `InvalidFileNameError`
+- Better and more consistent handling of Windows drive letters and paths
+- Fix bug where resetting the filechooser would not reenable the select/change button
+- Properly handle folder permission errors by raising a warning
 
 ### 0.5.0
 

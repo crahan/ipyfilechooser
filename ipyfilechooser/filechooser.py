@@ -273,6 +273,10 @@ class FileChooser(VBox, ValueWidget):
                 else:
                     self._select.disabled = False
         except PermissionError:
+            # Deselect the unreadable folder and generate a warning
+            self._dircontent.unobserve(self._on_dircontent_select, names='value')
+            self._dircontent.value = None
+            self._dircontent.observe(self._on_dircontent_select, names='value')
             warnings.warn(f'Permission denied for {path}', RuntimeWarning)
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:

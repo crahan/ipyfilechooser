@@ -105,6 +105,9 @@ fc.selected_filename
 
 ![Screenshot 6](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_6.png)
 
+### Restrict navigation
+
+![Screenshot 7](https://github.com/crahan/ipyfilechooser/raw/master/screenshots/FileChooser_screenshot_7.png)
 
 ## Release notes
 
@@ -117,7 +120,7 @@ fc.selected_filename
 - Better error handling with `ParentPathError`, `InvalidPathError`, and `InvalidFileNameError`
 - Better and more consistent handling of Windows drive letters and paths
 - Fix bug where resetting the filechooser would not reenable the select/change button
-- Properly handle folder permission errors by raising a warning indicating the folder can not be opened
+- Properly handle folder permission errors by raising a warning
 
 ### 0.5.0
 

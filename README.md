@@ -116,8 +116,8 @@ fc.selected_filename
 - `dir_icon_append` can now be used to put the folder icon before or after the folder name
 - Better error handling with `ParentPathError`, `InvalidPathError`, and `InvalidFileNameError`
 - Better and more consistent handling of Windows drive letters and paths
-- Select button is now properly activated again when applying a selection or resetting the filechooser
-
+- Fix bug where resetting the filechooser would not reenable the select/change button
+- Properly handle folder permission errors by raising a warning indicating the folder can not be opened
 
 ### 0.5.0
 

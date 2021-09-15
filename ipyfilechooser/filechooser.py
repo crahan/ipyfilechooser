@@ -1,4 +1,5 @@
 import os
+import warnings
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
@@ -167,106 +168,112 @@ class FileChooser(VBox, ValueWidget):
         if self._sandbox_path and not has_parent_path(path, self._sandbox_path):
             raise ParentPathError(path, self._sandbox_path)
 
-        # Disable triggers to prevent selecting an entry in the Select
-        # box from automatically triggering a new event.
-        self._pathlist.unobserve(self._on_pathlist_select, names='value')
-        self._dircontent.unobserve(self._on_dircontent_select, names='value')
-        self._filename.unobserve(self._on_filename_change, names='value')
+        try:
+            # Fail early if the folder can not be read
+            _ = os.listdir(path)
 
-        # In folder only mode zero out the filename
-        if self._show_only_dirs:
-            filename = ''
+            # Disable triggers to prevent selecting an entry in the Select
+            # box from automatically triggering a new event.
+            self._pathlist.unobserve(self._on_pathlist_select, names='value')
+            self._dircontent.unobserve(self._on_dircontent_select, names='value')
+            self._filename.unobserve(self._on_filename_change, names='value')
 
-        # Set form values
-        restricted_path = self._restrict_path(path)
-        subpaths = get_subpaths(restricted_path)
+            # In folder only mode zero out the filename
+            if self._show_only_dirs:
+                filename = ''
 
-        if os.path.splitdrive(subpaths[-1])[0]:
-            # Add missing Windows drive letters
-            drives = get_drive_letters()
-            subpaths.extend(list(set(drives) - set(subpaths)))
+            # Set form values
+            restricted_path = self._restrict_path(path)
+            subpaths = get_subpaths(restricted_path)
 
-        self._pathlist.options = subpaths
-        self._pathlist.value = restricted_path
-        self._filename.value = filename
+            if os.path.splitdrive(subpaths[-1])[0]:
+                # Add missing Windows drive letters
+                drives = get_drive_letters()
+                subpaths.extend(list(set(drives) - set(subpaths)))
 
-        # file/folder real names
-        dircontent_real_names = get_dir_contents(
-            path,
-            show_hidden=self._show_hidden,
-            show_only_dirs=self._show_only_dirs,
-            dir_icon=None,
-            filter_pattern=self._filter_pattern,
-            top_path=self._sandbox_path
-        )
+            self._pathlist.options = subpaths
+            self._pathlist.value = restricted_path
+            self._filename.value = filename
 
-        # file/folder display names
-        dircontent_display_names = get_dir_contents(
-            path,
-            show_hidden=self._show_hidden,
-            show_only_dirs=self._show_only_dirs,
-            dir_icon=self._dir_icon,
-            dir_icon_append=self._dir_icon_append,
-            filter_pattern=self._filter_pattern,
-            top_path=self._sandbox_path
-        )
-
-        # Dict to map real names to display names
-        self._map_name_to_disp = {
-            real_name: disp_name
-            for real_name, disp_name in zip(
-                dircontent_real_names,
-                dircontent_display_names
+            # file/folder real names
+            dircontent_real_names = get_dir_contents(
+                path,
+                show_hidden=self._show_hidden,
+                show_only_dirs=self._show_only_dirs,
+                dir_icon=None,
+                filter_pattern=self._filter_pattern,
+                top_path=self._sandbox_path
             )
-        }
 
-        # Dict to map display names to real names
-        self._map_disp_to_name = {
-            disp_name: real_name
-            for real_name, disp_name in self._map_name_to_disp.items()
-        }
+            # file/folder display names
+            dircontent_display_names = get_dir_contents(
+                path,
+                show_hidden=self._show_hidden,
+                show_only_dirs=self._show_only_dirs,
+                dir_icon=self._dir_icon,
+                dir_icon_append=self._dir_icon_append,
+                filter_pattern=self._filter_pattern,
+                top_path=self._sandbox_path
+            )
 
-        # Set _dircontent form value to display names
-        self._dircontent.options = dircontent_display_names
+            # Dict to map real names to display names
+            self._map_name_to_disp = {
+                real_name: disp_name
+                for real_name, disp_name in zip(
+                    dircontent_real_names,
+                    dircontent_display_names
+                )
+            }
 
-        # If the value in the filename Text box equals a value in the
-        # Select box and the entry is a file then select the entry.
-        if ((filename in dircontent_real_names) and os.path.isfile(os.path.join(path, filename))):
-            self._dircontent.value = self._map_name_to_disp[filename]
-        else:
-            self._dircontent.value = None
+            # Dict to map display names to real names
+            self._map_disp_to_name = {
+                disp_name: real_name
+                for real_name, disp_name in self._map_name_to_disp.items()
+            }
 
-        # Reenable triggers again
-        self._pathlist.observe(self._on_pathlist_select, names='value')
-        self._dircontent.observe(self._on_dircontent_select, names='value')
-        self._filename.observe(self._on_filename_change, names='value')
+            # Set _dircontent form value to display names
+            self._dircontent.options = dircontent_display_names
 
-        # Update the state of the select button
-        if self._gb.layout.display is None:
-            # Disable the select button if path and filename
-            # - equal an existing folder in the current view
-            # - contains an invalid character sequence
-            # - equal the already selected values
-            # - don't match the provided filter pattern(s)
-            check1 = filename in dircontent_real_names
-            check2 = os.path.isdir(os.path.join(path, filename))
-            check3 = not is_valid_filename(filename)
-            check4 = False
-            check5 = False
-
-            # Only check selected if selected is set
-            if ((self._selected_path is not None) and (self._selected_filename is not None)):
-                selected = os.path.join(self._selected_path, self._selected_filename)
-                check4 = os.path.join(path, filename) == selected
-
-            # Ensure only allowed extensions are used
-            if self._filter_pattern:
-                check5 = not match_item(filename, self._filter_pattern)
-
-            if (check1 and check2) or check3 or check4 or check5:
-                self._select.disabled = True
+            # If the value in the filename Text box equals a value in the
+            # Select box and the entry is a file then select the entry.
+            if ((filename in dircontent_real_names) and os.path.isfile(os.path.join(path, filename))):
+                self._dircontent.value = self._map_name_to_disp[filename]
             else:
-                self._select.disabled = False
+                self._dircontent.value = None
+
+            # Reenable triggers again
+            self._pathlist.observe(self._on_pathlist_select, names='value')
+            self._dircontent.observe(self._on_dircontent_select, names='value')
+            self._filename.observe(self._on_filename_change, names='value')
+
+            # Update the state of the select button
+            if self._gb.layout.display is None:
+                # Disable the select button if path and filename
+                # - equal an existing folder in the current view
+                # - contains an invalid character sequence
+                # - equal the already selected values
+                # - don't match the provided filter pattern(s)
+                check1 = filename in dircontent_real_names
+                check2 = os.path.isdir(os.path.join(path, filename))
+                check3 = not is_valid_filename(filename)
+                check4 = False
+                check5 = False
+
+                # Only check selected if selected is set
+                if ((self._selected_path is not None) and (self._selected_filename is not None)):
+                    selected = os.path.join(self._selected_path, self._selected_filename)
+                    check4 = os.path.join(path, filename) == selected
+
+                # Ensure only allowed extensions are used
+                if self._filter_pattern:
+                    check5 = not match_item(filename, self._filter_pattern)
+
+                if (check1 and check2) or check3 or check4 or check5:
+                    self._select.disabled = True
+                else:
+                    self._select.disabled = False
+        except PermissionError:
+            warnings.warn(f'Permission denied for {path}', RuntimeWarning)
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a path entry."""

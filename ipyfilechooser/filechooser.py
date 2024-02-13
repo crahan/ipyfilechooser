@@ -22,6 +22,7 @@ class FileChooser(VBox, ValueWidget):
             select_desc: str = 'Select',
             change_desc: str = 'Change',
             show_hidden: bool = False,
+            allow_typing: bool = False,
             select_default: bool = False,
             dir_icon: Optional[str] = '\U0001F4C1 ',
             dir_icon_append: bool = False,
@@ -44,6 +45,7 @@ class FileChooser(VBox, ValueWidget):
         self._selected_path: Optional[str] = None
         self._selected_filename: Optional[str] = None
         self._show_hidden = show_hidden
+        self._allow_typing = allow_typing
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._select_default = select_default
@@ -55,7 +57,8 @@ class FileChooser(VBox, ValueWidget):
         self._callback: Optional[Callable] = None
 
         # Widgets
-        self._pathlist = Dropdown(
+        _pathlist_widget = Text if self._allow_typing else Dropdown
+        self._pathlist = _pathlist_widget(
             description="",
             layout=Layout(
                 width='auto',
@@ -174,6 +177,11 @@ class FileChooser(VBox, ValueWidget):
         self._dircontent.unobserve(self._on_dircontent_select, names='value')
         self._filename.unobserve(self._on_filename_change, names='value')
 
+        _spec_path = path
+        if self._allow_typing and not os.path.exists(path):
+            path = os.path.abspath(os.path.join(path, os.pardir))
+        path = path.removesuffix('/')
+
         try:
             # Fail early if the folder can not be read
             _ = os.listdir(path)
@@ -183,7 +191,7 @@ class FileChooser(VBox, ValueWidget):
                 filename = ''
 
             # Set form values
-            restricted_path = self._restrict_path(path)
+            restricted_path = self._restrict_path(_spec_path)
             subpaths = get_subpaths(restricted_path)
 
             if os.path.splitdrive(subpaths[-1])[0]:
@@ -278,7 +286,7 @@ class FileChooser(VBox, ValueWidget):
         self._filename.observe(self._on_filename_change, names='value')
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
-        """Handle selecting a path entry."""
+        """Handle selecting a path entry."""        
         self._set_form_values(self._expand_path(change['new']), self._filename.value)
 
     def _on_dircontent_select(self, change: Mapping[str, str]) -> None:

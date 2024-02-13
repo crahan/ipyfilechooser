@@ -177,6 +177,10 @@ class FileChooser(VBox, ValueWidget):
         self._dircontent.unobserve(self._on_dircontent_select, names='value')
         self._filename.unobserve(self._on_filename_change, names='value')
 
+        _spec_path = path
+        if self._allow_typing and not os.path.exists(path):
+            path = os.path.abspath(os.path.join(path, os.pardir))
+
         try:
             # Fail early if the folder can not be read
             _ = os.listdir(path)
@@ -186,7 +190,7 @@ class FileChooser(VBox, ValueWidget):
                 filename = ''
 
             # Set form values
-            restricted_path = self._restrict_path(path)
+            restricted_path = self._restrict_path(_spec_path)
             subpaths = get_subpaths(restricted_path)
 
             if os.path.splitdrive(subpaths[-1])[0]:
@@ -281,10 +285,7 @@ class FileChooser(VBox, ValueWidget):
         self._filename.observe(self._on_filename_change, names='value')
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
-        """Handle selecting a path entry."""
-        if self._allow_typing and not os.path.exists(change['new']):
-            return
-        
+        """Handle selecting a path entry."""        
         self._set_form_values(self._expand_path(change['new']), self._filename.value)
 
     def _on_dircontent_select(self, change: Mapping[str, str]) -> None:

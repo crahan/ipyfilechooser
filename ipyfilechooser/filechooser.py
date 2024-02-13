@@ -22,6 +22,7 @@ class FileChooser(VBox, ValueWidget):
             select_desc: str = 'Select',
             change_desc: str = 'Change',
             show_hidden: bool = False,
+            allow_typing: bool = False,
             select_default: bool = False,
             dir_icon: Optional[str] = '\U0001F4C1 ',
             dir_icon_append: bool = False,
@@ -44,6 +45,7 @@ class FileChooser(VBox, ValueWidget):
         self._selected_path: Optional[str] = None
         self._selected_filename: Optional[str] = None
         self._show_hidden = show_hidden
+        self._allow_typing = allow_typing
         self._select_desc = select_desc
         self._change_desc = change_desc
         self._select_default = select_default
@@ -55,7 +57,8 @@ class FileChooser(VBox, ValueWidget):
         self._callback: Optional[Callable] = None
 
         # Widgets
-        self._pathlist = Dropdown(
+        _pathlist_widget = Text if self._allow_typing else Dropdown
+        self._pathlist = _pathlist_widget(
             description="",
             layout=Layout(
                 width='auto',
@@ -279,6 +282,9 @@ class FileChooser(VBox, ValueWidget):
 
     def _on_pathlist_select(self, change: Mapping[str, str]) -> None:
         """Handle selecting a path entry."""
+        if self._allow_typing and not os.path.exists(change['new']):
+            return
+        
         self._set_form_values(self._expand_path(change['new']), self._filename.value)
 
     def _on_dircontent_select(self, change: Mapping[str, str]) -> None:

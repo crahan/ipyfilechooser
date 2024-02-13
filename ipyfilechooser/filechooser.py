@@ -180,6 +180,7 @@ class FileChooser(VBox, ValueWidget):
         _spec_path = path
         if self._allow_typing and not os.path.exists(path):
             path = os.path.abspath(os.path.join(path, os.pardir))
+        path = path.removesuffix('/')
 
         try:
             # Fail early if the folder can not be read
